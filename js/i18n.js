@@ -342,16 +342,20 @@ function getDefaultLanguage() {
     const saved = localStorage.getItem(I18N_STORAGE_KEY);
     if (saved === 'en' || saved === 'zh') return saved;
 
-    // 优先级 2: 时区检测
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const chineseZones = ['Asia/Shanghai', 'Asia/Chongqing', 'Asia/Urumqi', 'Asia/Harbin', 'Asia/Hong_Kong', 'Asia/Macau', 'Asia/Taipei'];
-    if (chineseZones.some(zone => tz.includes(zone))) {
-        return 'zh';
+    // 优先级 2: 浏览器语言（navigator.languages 更可靠，支持多偏好）
+    const langs = navigator.languages || [navigator.language || navigator.userLanguage];
+    for (let i = 0; i < langs.length; i++) {
+        const code = (langs[i] || '').toLowerCase();
+        if (code.startsWith('zh')) return 'zh';
+        if (code.startsWith('en')) return 'en';
     }
 
-    // 优先级 3: 浏览器语言
-    const lang = navigator.language || navigator.userLanguage;
-    if (lang && lang.startsWith('zh')) return 'zh';
+    // 优先级 3: 时区检测
+    try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        const chineseZones = ['Asia/Shanghai', 'Asia/Chongqing', 'Asia/Urumqi', 'Asia/Harbin', 'Asia/Hong_Kong', 'Asia/Macau', 'Asia/Taipei'];
+        if (chineseZones.some(zone => tz.indexOf(zone) !== -1)) return 'zh';
+    } catch (e) { /* ignore */ }
 
     // 默认: 英文
     return 'en';
@@ -428,13 +432,20 @@ function toggleLanguage() {
 }
 
 // 页面加载完成后：从 localStorage 同步语言并应用，保证切换页面能记住
-document.addEventListener('DOMContentLoaded', () => {
+function applyStoredLanguageAndUpdate() {
     const stored = localStorage.getItem(I18N_STORAGE_KEY);
     if (stored === 'en' || stored === 'zh') {
         currentLang = stored;
     }
     updatePage();
-});
+}
+
+document.addEventListener('DOMContentLoaded', applyStoredLanguageAndUpdate);
+
+// 若脚本在 DOM 就绪之后才执行（如 defer/动态加载），DOMContentLoaded 已触发过，需立即执行一次
+if (document.readyState !== 'loading') {
+    applyStoredLanguageAndUpdate();
+}
 
 // 暴露给全局以便在 HTML 中调用
 window.toggleLanguage = toggleLanguage;
