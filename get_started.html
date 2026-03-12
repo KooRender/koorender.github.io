@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Started - KooRender</title>
+    <title data-i18n="nav_get_started">Get Started - KooRender</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- i18n support -->
+    <script src="js/i18n.js"></script>
     
     <!-- 沿用原品牌样式配置 -->
     <script>
@@ -53,10 +55,23 @@
                 <span>KooRender</span>
             </a>
             <div class="hidden md:flex items-center gap-8">
-                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors">Features</a>
-                <a href="#get-started" class="text-dark/80 hover:text-primary transition-colors">Get Started</a>
-                <a href="#contact" class="text-dark/80 hover:text-primary transition-colors">Contact</a>
-                <a href="#" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">Download</a>
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_features">Features</a>
+                <a href="#get-started" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_get_started">Get Started</a>
+                <a href="#contact" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button onclick="toggleLangDropdown(event)" class="flex items-center gap-1 text-dark/80 hover:text-primary transition-colors font-medium border border-dark/20 px-3 py-1 rounded-md text-sm">
+                        <span class="lang-current-text">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div class="lang-dropdown-menu hidden absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-[60]">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">English</button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">中文</button>
+                    </div>
+                </div>
+
+                <a href="#" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_demo">Download</a>
             </div>
             <!-- 移动端菜单按钮 -->
             <button class="md:hidden text-dark text-xl" id="mobile-menu-btn">
@@ -66,10 +81,20 @@
         <!-- 移动端菜单 -->
         <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
             <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
-                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors py-2">Features</a>
-                <a href="#get-started" class="text-dark/80 hover:text-primary transition-colors py-2">Get Started</a>
-                <a href="#contact" class="text-dark/80 hover:text-primary transition-colors py-2">Contact</a>
-                <a href="#" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center">Download</a>
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_features">Features</a>
+                <a href="#get-started" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_get_started">Get Started</a>
+                <a href="#contact" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Choice (Mobile) -->
+                <div class="flex flex-col gap-2 py-2">
+                    <p class="text-dark/40 text-xs font-bold uppercase tracking-wider" data-i18n="footer_support">Language</p>
+                    <div class="flex gap-4">
+                        <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
+                        <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <a href="#" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center" data-i18n="nav_demo">Download</a>
             </div>
         </div>
     </nav>
@@ -77,16 +102,16 @@
     <!-- 页面头部 -->
     <section class="pt-32 pb-16 bg-gradient-to-b from-neutral to-white">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow">
+            <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow" data-i18n="get_started_title">
                 Get Started with <span class="text-primary">KooRender</span>
             </h1>
-            <p class="text-lg text-dark/70 max-w-3xl mx-auto mb-8">
+            <p class="text-lg text-dark/70 max-w-3xl mx-auto mb-8" data-i18n="get_started_desc">
                 Follow these simple steps to start using our cloud-based real-time renderer. 
                 <span class="text-primary font-medium">Limited-time free trial available now!</span>
             </p>
             <!-- 限时免费标签 -->
             <div class="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <i class="fa-solid fa-clock mr-2"></i> Limited-time Free Access
+                <i class="fa-solid fa-clock mr-2"></i> <span data-i18n="limited_time_free_access">Limited-time Free Access</span>
             </div>
         </div>
     </section>
@@ -99,17 +124,17 @@
             <div class="mb-16">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">1</div>
-                    <h2 class="text-2xl font-bold">Download & Install KooRender</h2>
+                    <h2 class="text-2xl font-bold" data-i18n="step_1_title">Download & Install KooRender</h2>
                 </div>
                 
                 <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
-                    <p class="text-dark/70 mb-6 max-w-3xl">
+                    <p class="text-dark/70 mb-6 max-w-3xl" data-i18n="step_1_desc">
                         Download the latest KooRender software package and complete the installation following the wizard. 
                         Make sure your system meets the minimum requirements (Windows 10+, 3ds Max 2020+).
                     </p>
                     <a href="#" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
                         <i class="fa-solid fa-download"></i>
-                        Download KooRender Package
+                        <span data-i18n="download_package_btn">Download KooRender Package</span>
                     </a>
                 </div>
             </div>
@@ -118,7 +143,7 @@
             <div class="mb-16">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">2</div>
-                    <h2 class="text-2xl font-bold">Create an Account</h2>
+                    <h2 class="text-2xl font-bold" data-i18n="step_2_title">Create an Account</h2>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -126,10 +151,10 @@
                     <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
                         <div class="flex items-center gap-3 mb-4">
                             <i class="fa-solid fa-globe text-primary text-2xl"></i>
-                            <h3 class="text-xl font-bold">For Overseas Users</h3>
+                            <h3 class="text-xl font-bold" data-i18n="overseas_users_title">For Overseas Users</h3>
                         </div>
-                        <p class="text-dark/70 mb-6">Register an account on Coohom platform to access KooRender services</p>
-                        <a href="https://www.coohom.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+                        <p class="text-dark/70 mb-6" data-i18n="overseas_users_desc">Register an account on Coohom platform to access KooRender services</p>
+                        <a href="https://www.coohom.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="register_coohom_btn">
                             <i class="fa-solid fa-arrow-right"></i>
                             Register on Coohom
                         </a>
@@ -139,32 +164,32 @@
                     <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
                         <div class="flex items-center gap-3 mb-4">
                             <i class="fa-solid fa-flag text-primary text-2xl"></i>
-                            <h3 class="text-xl font-bold">For Chinese Users</h3>
+                            <h3 class="text-xl font-bold" data-i18n="chinese_users_title">For Chinese Users</h3>
                         </div>
-                        <p class="text-dark/70 mb-6">Register an account on Kujiale platform to access KooRender services</p>
-                        <a href="https://www.kujiale.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+                        <p class="text-dark/70 mb-6" data-i18n="chinese_users_desc">Register an account on Kujiale platform to access KooRender services</p>
+                        <a href="https://www.kujiale.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="register_kujiale_btn">
                             <i class="fa-solid fa-arrow-right"></i>
                             Register on Kujiale
                         </a>
                     </div>
                 </div>
                 
-                <p class="text-dark/60 mt-4 text-sm">Already have an account? Skip to step 2 and use your existing Coohom/Kujiale account to log in.</p>
+                <p class="text-dark/60 mt-4 text-sm" data-i18n="already_have_account">Already have an account? Skip to step 2 and use your existing Coohom/Kujiale account to log in.</p>
             </div>
 
             <!-- 第三步：启动使用 -->
             <div class="mb-16">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">3</div>
-                    <h2 class="text-2xl font-bold">Launch & Start Rendering</h2>
+                    <h2 class="text-2xl font-bold" data-i18n="step_3_title">Launch & Start Rendering</h2>
                 </div>
                 
                 <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
                     <ol class="list-decimal list-inside space-y-4 text-dark/70 mb-8 pl-4">
-                        <li>Launch your 3ds Max software (2020 or newer version)</li>
-                        <li>Find and open the KooRender plugin from the 3ds Max plugin menu</li>
-                        <li>Log in with your Coohom/Kujiale account credentials</li>
-                        <li>Start using real-time rendering and offline rendering features for free</li>
+                        <li data-i18n="step_3_step_1">Launch your 3ds Max software (2020 or newer version)</li>
+                        <li data-i18n="step_3_step_2">Find and open the KooRender plugin from the 3ds Max plugin menu</li>
+                        <li data-i18n="step_3_step_3">Log in with your Coohom/Kujiale account credentials</li>
+                        <li data-i18n="step_3_step_4">Start using real-time rendering and offline rendering features for free</li>
                     </ol>
                     
                     <!-- 限时免费提示 -->
@@ -172,8 +197,8 @@
                         <div class="flex items-start gap-3">
                             <i class="fa-solid fa-lightbulb text-yellow-500 mt-1"></i>
                             <div>
-                                <h4 class="font-bold text-yellow-800">Limited-time Free Trial</h4>
-                                <p class="text-yellow-700 text-sm">
+                                <h4 class="font-bold text-yellow-800" data-i18n="limited_time_free_trial_title">Limited-time Free Trial</h4>
+                                <p class="text-yellow-700 text-sm" data-i18n="limited_time_free_trial_desc">
                                     Currently, all KooRender features (real-time rendering & offline rendering) are available for free during the trial period. 
                                     Enjoy high-quality cloud rendering without any cost!
                                 </p>
@@ -185,15 +210,15 @@
 
             <!-- 帮助支持 -->
             <div class="text-center mt-12">
-                <h3 class="text-xl font-bold mb-4">Need Help?</h3>
-                <p class="text-dark/70 mb-6 max-w-2xl mx-auto">
+                <h3 class="text-xl font-bold mb-4" data-i18n="need_help_title">Need Help?</h3>
+                <p class="text-dark/70 mb-6 max-w-2xl mx-auto" data-i18n="need_help_desc">
                     If you encounter any issues during the setup process, check our documentation or contact our support team.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4">
-                    <a href="#" class="border border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary/5 transition-colors">
+                    <a href="#" class="border border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary/5 transition-colors" data-i18n="view_documentation_btn">
                         <i class="fa-solid fa-book mr-2"></i> View Documentation
                     </a>
-                    <a href="#" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+                    <a href="#" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="contact_support_btn">
                         <i class="fa-solid fa-headset mr-2"></i> Contact Support
                     </a>
                 </div>
@@ -210,7 +235,7 @@
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <span>KooRender</span>
                     </a>
-                    <p class="text-white/70 mb-4">Cloud-based Real-time Renderer</p>
+                    <p class="text-white/70 mb-4" data-i18n="hero_desc">Cloud-based Real-time Renderer</p>
                     <div class="flex gap-4">
                         <a href="#" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
                         <a href="#" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
@@ -218,34 +243,34 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Product</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_product">Product</h4>
                     <ul class="space-y-2">
-                        <li><a href="#features" class="text-white/70 hover:text-white transition-colors">Features</a></li>
-                        <li><a href="#get-started" class="text-white/70 hover:text-white transition-colors">Get Started</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Documentation</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">API</a></li>
+                        <li><a href="features.html" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#get-started" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_get_started">Get Started</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_documentation">Documentation</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_api">API</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Company</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_company">Company</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Careers</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Press</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_about_us">About Us</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_careers">Careers</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_blog">Blog</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_press">Press</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Support</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_support">Support</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Help Center</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Contact Us</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Terms of Service</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_help_center">Help Center</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_contact_us">Contact Us</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_terms_of_service">Terms of Service</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_privacy_policy">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm">
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm" data-i18n="footer_copyright">
                 © 2026 KooRender. All rights reserved.
             </div>
         </div>

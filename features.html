@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features - KooRender</title>
+    <title data-i18n="nav_features">Features - KooRender</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- i18n support -->
+    <script src="js/i18n.js"></script>
     
     <!-- 沿用原品牌样式配置 -->
     <script>
@@ -56,9 +58,22 @@
                 <span>KooRender</span>
             </a>
             <div class="hidden md:flex items-center gap-8">
-                <a href="#features-list" class="text-dark/80 hover:text-primary transition-colors">All Features</a>
-                <a href="#" class="text-dark/80 hover:text-primary transition-colors">Demo</a>
-                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">Get Started</a>
+                <a href="#features-list" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_all_features">All Features</a>
+                <a href="#" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_demo">Demo</a>
+                
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button onclick="toggleLangDropdown(event)" class="flex items-center gap-1 text-dark/80 hover:text-primary transition-colors font-medium border border-dark/20 px-3 py-1 rounded-md text-sm">
+                        <span class="lang-current-text">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div class="lang-dropdown-menu hidden absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-[60]">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">English</button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_get_started">Get Started</a>
             </div>
             <!-- 移动端菜单按钮 -->
             <button class="md:hidden text-dark text-xl" id="mobile-menu-btn">
@@ -68,9 +83,19 @@
         <!-- 移动端菜单 -->
         <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
             <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
-                <a href="#features-list" class="text-dark/80 hover:text-primary transition-colors py-2">All Features</a>
-                <a href="#" class="text-dark/80 hover:text-primary transition-colors py-2">Demo</a>
-                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center">Get Started</a>
+                <a href="#features-list" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_all_features">All Features</a>
+                <a href="#" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_demo">Demo</a>
+                
+                <!-- Language Choice (Mobile) -->
+                <div class="flex flex-col gap-2 py-2">
+                    <p class="text-dark/40 text-xs font-bold uppercase tracking-wider" data-i18n="footer_support">Language</p>
+                    <div class="flex gap-4">
+                        <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
+                        <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center" data-i18n="nav_get_started">Get Started</a>
             </div>
         </div>
     </nav>
@@ -79,10 +104,10 @@
     <section class="pt-32 pb-16 bg-gradient-to-b from-neutral to-white">
         <div class="container mx-auto px-4">
             <div class="max-w-3xl mx-auto text-center">
-                <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow">
+                <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow" data-i18n="features_list_title">
                     KooRender <span class="text-primary">Features</span>
                 </h1>
-                <p class="text-lg text-dark/70 leading-relaxed">
+                <p class="text-lg text-dark/70 leading-relaxed" data-i18n="features_list_desc">
                     Comprehensive rendering capabilities with extensive support for 3ds Max and V-Ray workflows, 
                     combined with cutting-edge 3D Gaussian technology and AI enhancement.
                 </p>
@@ -99,11 +124,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-bolt-lightning"></i>
-                        Real-time Rendering
+                        <span data-i18n="feature_realtime_rendering">Real-time Rendering</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>Interactive image rendering</li>
-                        <li>Real-time scene updates</li>
+                        <li data-i18n="feature_interactive_image">Interactive image rendering</li>
+                        <li data-i18n="feature_realtime_scene">Real-time scene updates</li>
                     </ul>
                 </div>
 
@@ -111,10 +136,10 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-download"></i>
-                        Offline Rendering
+                        <span data-i18n="feature_offline_rendering">Offline Rendering</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>Static image rendering</li>
+                        <li data-i18n="feature_static_image">Static image rendering</li>
                     </ul>
                 </div>
 
@@ -122,11 +147,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-eye"></i>
-                        Render View
+                        <span data-i18n="feature_render_view">Render View</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>2D image navigation</li>
-                        <li>RGBA channel view</li>
+                        <li data-i18n="feature_2d_navigation">2D image navigation</li>
+                        <li data-i18n="feature_rgba_channel">RGBA channel view</li>
                     </ul>
                 </div>
 
@@ -134,11 +159,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-cube"></i>
-                        Supported Geometry
+                        <span data-i18n="feature_supported_geometry">Supported Geometry</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>Static mesh</li>
-                        <li>3D Gaussians</li>
+                        <li data-i18n="feature_static_mesh">Static mesh</li>
+                        <li data-i18n="feature_3d_gaussians">3D Gaussians</li>
                     </ul>
                 </div>
 
@@ -146,11 +171,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-lightbulb"></i>
-                        Supported Lights
+                        <span data-i18n="feature_supported_lights">Supported Lights</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>VRayLight</li>
-                        <li>VRaySun</li>
+                        <li data-i18n="feature_vray_light">VRayLight</li>
+                        <li data-i18n="feature_vray_sun">VRaySun</li>
                     </ul>
                 </div>
 
@@ -158,13 +183,13 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-camera"></i>
-                        Supported Camera
+                        <span data-i18n="feature_supported_camera">Supported Camera</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>Standard camera
+                        <li data-i18n="feature_standard_camera">Standard camera
                             <ul class="list-circle pl-8 space-y-1 text-dark/70 mt-1">
-                                <li>Perspective</li>
-                                <li>Orthographic</li>
+                                <li data-i18n="feature_perspective">Perspective</li>
+                                <li data-i18n="feature_orthographic">Orthographic</li>
                             </ul>
                         </li>
                     </ul>
@@ -174,7 +199,7 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-paint-roller"></i>
-                        Supported Materials
+                        <span data-i18n="feature_supported_materials">Supported Materials</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80 grid grid-cols-1 md:grid-cols-2 gap-y-1">
                         <li>Multi/Sub-Object</li>
@@ -193,7 +218,7 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-map"></i>
-                        Supported Texture Maps
+                        <span data-i18n="feature_supported_texture_maps">Supported Texture Maps</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
                         <li>VRayBitmap</li>
@@ -208,10 +233,10 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        Image Processing
+                        <span data-i18n="feature_image_processing">Image Processing</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>Built-in AI denoiser</li>
+                        <li data-i18n="feature_ai_denoiser">Built-in AI denoiser</li>
                     </ul>
                 </div>
 
@@ -219,11 +244,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-cubes"></i>
-                        3D Gaussians
+                        <span data-i18n="feature_3d_gaussians">3D Gaussians</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>3D Gaussian generation</li>
-                        <li>Hybrid rendering with 3D Gaussians</li>
+                        <li data-i18n="feature_3d_gaussians_gen">3D Gaussian generation</li>
+                        <li data-i18n="feature_hybrid_rendering">Hybrid rendering with 3D Gaussians</li>
                     </ul>
                 </div>
 
@@ -231,11 +256,11 @@
                 <div class="feature-section">
                     <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-primary">
                         <i class="fa-solid fa-cog"></i>
-                        Miscellaneous
+                        <span data-i18n="feature_miscellaneous">Miscellaneous</span>
                     </h3>
                     <ul class="list-disc pl-8 space-y-1 text-dark/80">
-                        <li>User login</li>
-                        <li>Auto update</li>
+                        <li data-i18n="feature_user_login">User login</li>
+                        <li data-i18n="feature_auto_update">Auto update</li>
                     </ul>
                 </div>
             </div>
@@ -245,11 +270,11 @@
     <!-- CTA 区域 -->
     <section class="py-20 bg-primary/10">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold mb-6">Experience Full Rendering Capabilities</h2>
-            <p class="text-dark/70 max-w-2xl mx-auto mb-8 text-lg">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold mb-6" data-i18n="cta_section_title">Ready to Transform Your Rendering Workflow?</h2>
+            <p class="text-dark/70 max-w-2xl mx-auto mb-8 text-lg" data-i18n="cta_section_desc">
                 Try all KooRender features for free during our limited-time trial period and transform your 3D rendering workflow.
             </p>
-            <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium inline-block">
+            <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium inline-block" data-i18n="cta_trial_btn">
                 Start Your Free Trial Today
             </a>
         </div>
@@ -264,7 +289,7 @@
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <span>KooRender</span>
                     </a>
-                    <p class="text-white/70 mb-4">Cloud-based Real-time Renderer</p>
+                    <p class="text-white/70 mb-4" data-i18n="hero_desc">Cloud-based Real-time Renderer</p>
                     <div class="flex gap-4">
                         <a href="#" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
                         <a href="#" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
@@ -272,34 +297,34 @@
                     </div>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Product</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_product">Product</h4>
                     <ul class="space-y-2">
-                        <li><a href="#features-list" class="text-white/70 hover:text-white transition-colors">Features</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Documentation</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Pricing</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">API</a></li>
+                        <li><a href="#features-list" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_documentation">Documentation</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_pricing">Pricing</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_api">API</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Company</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_company">Company</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Careers</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Blog</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Press</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_about_us">About Us</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_careers">Careers</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_blog">Blog</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_press">Press</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Support</h4>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_support">Support</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Help Center</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Contact Us</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Terms of Service</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_help_center">Help Center</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_contact_us">Contact Us</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_terms_of_service">Terms of Service</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_privacy_policy">Privacy Policy</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm">
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm" data-i18n="footer_copyright">
                 © 2026 KooRender. All rights reserved.
             </div>
         </div>
