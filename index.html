@@ -6,6 +6,8 @@
     <title>KooRender - Cloud-based Real-time Renderer</title>
     <!-- Tailwind CSS CDN for quick styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Kujiale scripts for statistics -->
+    <script src="https://qhstaticssl.kujiale.com/text/javascript/1742890681722/kio.3.16.0.prod.js" defer></script>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -272,5 +274,53 @@
             });
         });
     </script>
+    
+	<script>
+	// 封装字段获取工具函数
+	const getTrackingFields = {
+		// 获取URL查询参数
+		getUrlParam: function(paramName) {
+			if (!paramName) return 'unknown';
+			const searchParams = new URLSearchParams(window.location.search);
+			return searchParams.get(paramName)?.trim() || 'unknown';
+		},
+		// 获取语言（lang）
+		getLang: function() {
+			// 优先级：URL参数 > 浏览器语言 > 默认值
+			const urlLang = this.getUrlParam('lang');
+			if (urlLang !== 'unknown') return urlLang.toLowerCase();
+			
+			const browserLang = navigator.language || navigator.userLanguage || 'en-US';
+			return browserLang.toLowerCase();
+		},
+		// 获取地区（region）
+		getRegion: function() {
+			// 优先级：URL参数 > 从语言推导 > 默认值
+			const urlRegion = this.getUrlParam('region');
+			if (urlRegion !== 'unknown') return urlRegion.toUpperCase();
+			
+			// 从语言推导（如zh-CN → CN）
+			const lang = this.getLang();
+			const langRegion = lang.split('-')[1] || 'US';
+			return langRegion.toUpperCase();
+		},
+		// 获取所有追踪字段
+		getAllFields: function() {
+			return {
+				lang: this.getLang(),
+				region: this.getRegion(),
+				utmSource: this.getUrlParam('utm_source'),
+				utmMedium: this.getUrlParam('utm_medium'),
+				utmCampaign: this.getUrlParam('utm_campaign')
+			};
+		}
+	};
+
+	// 动态获取所有字段并赋值
+	const properties = getTrackingFields.getAllFields();
+
+	// 上报埋点
+	window.$kio.log('koorender_landing_view', properties);
+	</script>
 </body>
 </html>
