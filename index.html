@@ -313,20 +313,29 @@
 			};
 		}
 	};
-
-	// 动态获取所有字段并赋值
-	const properties = getTrackingFields.getAllFields();
 	
-	// 上报埋点
-	const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_view/log";
+	async function sendTrackingData() {
+		// 动态获取所有字段并赋值
+		const properties = getTrackingFields.getAllFields();
+		
+		// 上报埋点
+		const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_view/log";
 
-	const res = await fetch(url, {
-	  method: "POST",
-	  headers: {
-		"Content-Type": "application/json",
-	  },
-	  body: JSON.stringify(properties)
-	});
+		try {
+			const res = await fetch(url, {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(properties)
+			});
+		} catch (err) {
+			// 捕获请求异常，避免页面报错
+			console.error("Report failed: ", err);
+		}
+	}
+	
+	sendTrackingData();
 	</script>
 </body>
 </html>
