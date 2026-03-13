@@ -187,13 +187,13 @@
                 <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
 					<!-- 新增视频/动图区域 -->
                     <div class="mb-8">
-                        <div class="rounded-xl overflow-hidden shadow-lg bg-neutral">
-                            <img src="https://qhstaticssl.kujiale.com/image/gif/1773389492637/B465189EB9FBA85C91A19F3631212307.gif" 
-                                 alt="KooRender usage demo" 
-                                 class="max-w-full h-auto object-contain">
-                        </div>
-                        <p class="text-center text-dark/60 mt-3 text-sm">KooRender</p>
-                    </div>
+						<div class="rounded-xl overflow-hidden shadow-lg bg-neutral flex items-center justify-center">  <!-- 关键：flex + 居中 -->
+							<img src="https://qhstaticssl.kujiale.com/image/gif/1773389492637/B465189EB9FBA85C91A19F3631212307.gif" 
+								 alt="KooRender usage demo" 
+								 class="max-w-full max-h-full object-contain">  <!-- 限制最大尺寸 -->
+						</div>
+						<p class="text-center text-dark/60 mt-3 text-sm">KooRender</p>
+					</div>
                     
                     <ol class="list-decimal list-inside space-y-4 text-dark/70 mb-8 pl-4">
                         <li data-i18n="step_3_step_1">Launch your 3ds Max software (2020 or newer version)</li>
