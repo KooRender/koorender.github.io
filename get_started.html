@@ -132,7 +132,7 @@
                         Download the latest KooRender software package and complete the installation following the wizard. 
                         Make sure your system meets the minimum requirements (Windows 10+, 3ds Max 2020+).
                     </p>
-                    <a href="https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.3.zip" target="_blank" rel="noopener noreferrer" download class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
+                    <a href="https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.3.zip" target="_blank" rel="noopener noreferrer" download class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" onclick="handleDownloadClick(event)">
                         <i class="fa-solid fa-download"></i>
                         <span data-i18n="download_package_btn">Download KooRender Package</span>
                     </a>
@@ -314,5 +314,71 @@
             });
         });
     </script>
+    
+    <script>
+    // 封装字段获取工具函数
+	const getTrackingFields = {
+		// 获取URL查询参数
+		getUrlParam: function(paramName) {
+			if (!paramName) return 'unknown';
+			const searchParams = new URLSearchParams(window.location.search);
+			return searchParams.get(paramName)?.trim() || 'unknown';
+		},
+		// 获取语言（lang）
+		getLang: function() {
+			// 优先级：URL参数 > 浏览器语言 > 默认值
+			const urlLang = this.getUrlParam('lang');
+			if (urlLang !== 'unknown') return urlLang.toLowerCase();
+			
+			const browserLang = navigator.language || navigator.userLanguage || 'en-US';
+			return browserLang.toLowerCase();
+		},
+		// 获取地区（region）
+		getRegion: function() {
+			// 优先级：URL参数 > 从语言推导 > 默认值
+			const urlRegion = this.getUrlParam('region');
+			if (urlRegion !== 'unknown') return urlRegion.toUpperCase();
+			
+			// 从语言推导（如zh-CN → CN）
+			const lang = this.getLang();
+			const langRegion = lang.split('-')[1] || 'US';
+			return langRegion.toUpperCase();
+		},
+		// 获取所有追踪字段
+		getAllFields: function() {
+			return {
+				lang: this.getLang(),
+				region: this.getRegion(),
+				utmSource: this.getUrlParam('utm_source'),
+				utmMedium: this.getUrlParam('utm_medium'),
+				utmCampaign: this.getUrlParam('utm_campaign')
+			};
+		}
+	};
+	
+	async function sendTrackingData() {
+		// 动态获取所有字段并赋值
+		const properties = getTrackingFields.getAllFields();
+		
+		// 上报埋点
+		const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_download/log";
+
+		try {
+			const res = await fetch(url, {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(properties)
+			});
+		} catch (err) {
+			// 捕获请求异常，避免页面报错
+			console.error("Report failed: ", err);
+		}
+	}
+	function handleDownloadClick(event) {
+		sendTrackingData();
+	}
+	</script>
 </body>
 </html>
