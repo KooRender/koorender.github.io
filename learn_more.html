@@ -54,6 +54,19 @@
             }
         }
     </style>
+    
+    <script>
+    (function() {
+		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
+		if (window.location.hostname.includes('koorender.com')) {
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-K936WG5');
+		}
+	})();
+    </script>
 </head>
 <body class="font-sans text-dark bg-white">
     <!-- 导航栏（与原页面一致） -->
