@@ -50,6 +50,45 @@
         }
     </style>
     
+    <style>
+    /* 悬浮容器：固定在右下角 */
+    .floating-qr {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 9999;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      text-align: center; /* 让文字和图片居中 */
+    }
+
+    /* 二维码图片 */
+    .floating-qr img {
+      width: 160px;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* 图片居中（兜底） */
+    }
+
+    /* 下方文字样式 */
+    .qr-text {
+      margin: 8px 0 0; /* 文字和二维码间距 */
+      font-size: 14px; /* 字号 */
+      color: #333;     /* 文字颜色 */
+      line-height: 1.2;/* 行高，避免文字重叠 */
+    }
+
+    /* 可选：悬停轻微放大，增加交互感 */
+    .floating-qr {
+      transition: transform 0.2s ease;
+    }
+    .floating-qr:hover {
+      transform: scale(1.05);
+    }
+  </style>
+    
     <script>
     (function() {
 		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
@@ -64,6 +103,12 @@
     </script>
 </head>
 <body class="font-sans text-dark bg-white">
+  <!-- 悬浮二维码（带文字） -->
+  <div class="floating-qr" id="qrContainer">
+    <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
+    <p class="qr-text">扫码加入用户群</p>
+  </div>
+  
     <!-- Navigation Bar -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -381,5 +426,28 @@
 	
 	sendTrackingData();
 	</script>
+	
+	<script>
+    // 检测语言并控制二维码显示
+    function checkLanguageAndShowQR() {
+      // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
+      const pageLang = document.documentElement.lang || '';
+      const browserLang = navigator.language || navigator.userLanguage || '';
+      
+      // 2. 判断是否为中文（包含简体zh-CN、繁体zh-TW/zh-HK等）
+      const isChinese = pageLang.startsWith('zh') || browserLang.startsWith('zh');
+      
+      // 3. 显示/隐藏二维码
+      const qrContainer = document.getElementById('qrContainer');
+      if (isChinese) {
+        qrContainer.style.display = 'block'; // 中文环境显示
+      } else {
+        qrContainer.style.display = 'none';  // 非中文环境隐藏
+      }
+    }
+
+    // 页面加载完成后执行检测
+    window.onload = checkLanguageAndShowQR;
+  </script>
 </body>
 </html>
