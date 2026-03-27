@@ -4,6 +4,7 @@ site_dir: site/docs
 
 theme:
   name: material
+  logo: https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png
   features:
     - navigation.sections
     - navigation.expand
@@ -16,8 +17,8 @@ theme:
     
 extra:
   social:
-    - icon: https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png
-    - link: https://koorender.com/
+    - icon: fontawesome/solid/house
+      link: https://koorender.com/
 
 plugins:
   - search
