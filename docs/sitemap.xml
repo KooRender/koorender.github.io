@@ -1,115 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
-        <loc>https://koorender.com/docs/en/</loc>
+        <loc>https://koorender.com/en/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/config/</loc>
+        <loc>https://koorender.com/en/config/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/config/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/config/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/config/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/guide/</loc>
+        <loc>https://koorender.com/en/guide/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/guide/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/guide/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/guide/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/start/</loc>
+        <loc>https://koorender.com/en/start/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/start/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/start/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/start/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/zh/</loc>
+        <loc>https://koorender.com/zh/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/zh/config/</loc>
+        <loc>https://koorender.com/zh/config/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/config/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/config/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/config/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/zh/guide/</loc>
+        <loc>https://koorender.com/zh/guide/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/guide/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/guide/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/guide/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/zh/start/</loc>
+        <loc>https://koorender.com/zh/start/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/start/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/start/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/start/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/en/</loc>
+        <loc>https://koorender.com/en/en/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/en/config/</loc>
+        <loc>https://koorender.com/en/en/config/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/config/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/config/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/config/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/en/guide/</loc>
+        <loc>https://koorender.com/en/en/guide/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/guide/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/guide/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/guide/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/en/start/</loc>
+        <loc>https://koorender.com/en/en/start/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/en/start/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/en/start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/en/start/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/en/start/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/zh/</loc>
+        <loc>https://koorender.com/en/zh/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/zh/config/</loc>
+        <loc>https://koorender.com/en/zh/config/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/config/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/config/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/config/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/zh/guide/</loc>
+        <loc>https://koorender.com/en/zh/guide/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/guide/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/guide/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/guide/"/>
     </url>
     <url>
-        <loc>https://koorender.com/docs/en/zh/start/</loc>
+        <loc>https://koorender.com/en/zh/start/</loc>
         <lastmod>2026-03-27</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/docs/en/zh/start/"/>
-        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/docs/zh/start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://koorender.com/en/zh/start/"/>
+        <xhtml:link rel="alternate" hreflang="zh" href="https://koorender.com/zh/start/"/>
     </url>
 </urlset>
