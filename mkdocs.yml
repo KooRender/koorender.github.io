@@ -6,6 +6,7 @@ language: zh
 
 theme:
   name: material
+  custom_dir: overrides
   logo: https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png
   features:
     - navigation.tracking
