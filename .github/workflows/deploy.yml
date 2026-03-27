@@ -3,7 +3,11 @@ name: Deploy MkDocs to GitHub Pages
 on:
   push:
     branches:
-      - main  # 你仓库的主分支（main 或 master）
+      - main
+
+# 👇 加上这一段，解决 403 权限！
+permissions:
+  contents: write
 
 jobs:
   build-deploy:
@@ -22,9 +26,8 @@ jobs:
       - name: Build MkDocs
         run: mkdocs build
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
-          
