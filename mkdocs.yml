@@ -13,6 +13,11 @@ theme:
     scheme: default
     primary: blue
     accent: blue
+    
+extra:
+  social:
+    - icon: https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png
+    - link: https://koorender.com/
 
 plugins:
   - search
