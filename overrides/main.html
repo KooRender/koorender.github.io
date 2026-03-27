@@ -2,15 +2,39 @@
 
 {% block header %}
 {{ super() }}
-<div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
-  <select onchange="window.location.href=this.value" style="padding:4px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
-    {% if config.language == 'zh' %}
-    <option value="{{ page.url | replace('/en/', '/zh/') | prepend: '/docs' }}" selected>中文</option>
-    <option value="{{ page.url | replace('/zh/', '/en/') | prepend: '/docs' }}">English</option>
-    {% else %}
-    <option value="{{ page.url | replace('/en/', '/zh/') | prepend: '/docs' }}">中文</option>
-    <option value="{{ page.url | replace('/zh/', '/en/') | prepend: '/docs' }}" selected>English</option>
-    {% endif %}
-  </select>
+
+<!-- 语言切换 - 集成到 Material 主题导航栏，风格完全一致 -->
+<div class="md-header__option">
+  <div class="md-select">
+    <button
+      class="md-select__button"
+      aria-label="Change language"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <i class="md-icon md-icon--translate md-select__icon"></i>
+      <span class="md-select__label">
+        {% if config.language == "zh" %}中文{% else %}English{% endif %}
+      </span>
+    </button>
+    <select
+      class="md-select__select"
+      onchange="location.href=this.value"
+      aria-label="Select language"
+    >
+      <option
+        value="/docs/zh/{{ page.url }}"
+        {% if config.language == "zh" %}selected{% endif %}
+      >
+        中文
+      </option>
+      <option
+        value="/docs/en/{{ page.url }}"
+        {% if config.language == "en" %}selected{% endif %}
+      >
+        English
+      </option>
+    </select>
+  </div>
 </div>
 {% endblock %}
