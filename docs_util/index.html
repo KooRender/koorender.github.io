@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+    <script>
+      const lang = navigator.language || navigator.userLanguage;
+      if (lang.startsWith('zh')) {
+        window.location.replace('/zh/');
+      } else {
+        window.location.replace('/en/');
+      }
+    </script>
+  </head>
+  <body></body>
+  </html>
