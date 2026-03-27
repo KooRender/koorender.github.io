@@ -13,13 +13,14 @@
   </select>
 
   <script>
-    document.getElementById('langSwitch').addEventListener('change', function() {
-      let lang = this.value;
-      let path = window.location.pathname;
-      
-      // 自动替换 en ↔ zh，保持后面路径不变
-      let newPath = path.replace(/\/(zh|en)\//, `/${lang}/`);
-      window.location.href = newPath;
+    document.addEventListener('DOMContentLoaded', function() {
+      const sel = document.getElementById('langSwitch');
+      sel.addEventListener('change', function() {
+        const newLang = this.value;
+        const path = window.location.pathname;
+        const newUrl = path.replace(/\/(en|zh)\//, `/${newLang}/`);
+        window.location.href = newUrl;
+      });
     });
   </script>
 </div>
