@@ -1,4 +1,4 @@
-name: Deploy MkDocs to GitHub Pages
+name: Deploy MkDocs
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,16 +23,18 @@ jobs:
         run: |
           pip install mkdocs mkdocs-material mkdocs-static-i18n
 
-      - name: Build MkDocs
+      - name: Build docs
         run: mkdocs build
 
-      - name: Copy all static files (html, js, CNAME)
+      - name: Copy root files
         run: |
           cp *.html site/
           cp -R js/ site/
+          cp -R assets/ site/
           cp CNAME site/
+          cp docs/index.html site/docs/index.html
 
-      - name: Deploy to gh-pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
