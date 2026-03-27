@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 缓存控制标签（对浏览器缓存有一定作用） -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="hero_learn_more_btn">Learn More - KooRender</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- i18n support -->
+    <script src="js/i18n.js?v=20260320.1"></script>
+    
+    <!-- 沿用原品牌样式配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0A2463',
+                        accent: '#3E92CC',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2B3A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .feature-card {
+                transition: all 0.3s ease;
+            }
+            .feature-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 20px rgba(22, 93, 255, 0.1);
+            }
+            .tech-point {
+                border-left: 3px solid #165DFF;
+                padding-left: 1rem;
+                margin-left: 0.5rem;
+            }
+        }
+    </style>
+    
+    <script>
+    (function() {
+		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
+		if (window.location.hostname.includes('koorender.com')) {
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-K936WG5');
+		}
+	})();
+    </script>
+</head>
+<body class="font-sans text-dark bg-white">
+    <!-- 导航栏（与原页面一致） -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="block">
+				<img src="https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png" 
+					 alt="KooRender" 
+					 class="h-8 w-auto">
+			</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button onclick="toggleLangDropdown(event)" class="flex items-center gap-1 text-dark/80 hover:text-primary transition-colors font-medium border border-dark/20 px-3 py-1 rounded-md text-sm">
+                        <span class="lang-current-text">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div class="lang-dropdown-menu hidden absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-[60]">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">English</button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_get_started">Get Started</a>
+            </div>
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-dark text-xl" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Choice (Mobile) -->
+                <div class="flex flex-col gap-2 py-2">
+                    <p class="text-dark/40 text-xs font-bold uppercase tracking-wider" data-i18n="footer_support">Language</p>
+                    <div class="flex gap-4">
+                        <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
+                        <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center" data-i18n="nav_get_started">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="pt-32 pb-16 bg-gradient-to-b from-neutral to-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow" data-i18n="why_choose_koorender_title">
+                    Why Choose <span class="text-primary">KooRender</span> Real-time Cloud Rendering
+                </h1>
+                <p class="text-lg text-dark/70 leading-relaxed" data-i18n="why_choose_koorender_desc">
+                    KooRender redefines 3D rendering workflows with cutting-edge cloud-native architecture, 
+                    delivering real-time interactive rendering capabilities that break through the limitations of local hardware.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心技术架构优势 -->
+    <section id="tech-advantages" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold mb-4" data-i18n="core_tech_title">Core Technical Architecture Advantages</h2>
+                <p class="text-dark/70 max-w-2xl mx-auto" data-i18n="core_tech_desc">
+                    Built on a distributed cloud architecture, KooRender solves the pain points of traditional rendering workflows
+                    with innovative technical design.
+                </p>
+            </div>
+
+            <!-- 技术优势卡片网格 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- 1. 云实时交互式渲染 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-bolt-lightning text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4" data-i18n="realtime_cloud_rendering_title">Real-time Cloud Interactive Rendering</h3>
+                    <p class="text-dark/70 mb-6" data-i18n="realtime_cloud_rendering_desc">
+                        Compress the traditional "adjust-wait-evaluate" cycle to seconds, enabling true iterative design thinking.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="target_latency_title">Target Latency < 2 Seconds</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="target_latency_desc">Achieve near-instant feedback for design adjustments</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="distributed_gpu_title">Distributed GPU Cluster Scaling</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="distributed_gpu_desc">Dynamically expand computing resources based on task complexity</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="incremental_sync_title">Incremental Synchronization Mechanism</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="incremental_sync_desc">Reduce data transmission by only syncing changed elements</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 本地硬件独立性 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-desktop text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4" data-i18n="hardware_independence_title">Local Hardware Independence</h3>
+                    <p class="text-dark/70 mb-6" data-i18n="hardware_independence_desc">
+                        Convert fixed costs of high-end workstations to a flexible subscription model (free for a limited time), eliminating hardware investment barriers.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="network_requirement_title">Basic Network Requirement (50Mbps+)</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="network_requirement_desc">Works on any device with standard broadband connection</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="productivity_on_any_device_title">Full Productivity on Any Device</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="productivity_on_any_device_desc">Access complete rendering capabilities from laptops, tablets, or desktops</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="on_demand_computing_title">10x+ On-demand Computing Power</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="on_demand_computing_desc">Scale up to 10 times more computing power when needed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 3ds Max原生插件集成 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-puzzle-piece text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4" data-i18n="native_plugin_integration_title">3ds Max Native Plugin Integration</h3>
+                    <p class="text-dark/70 mb-6" data-i18n="native_plugin_integration_desc">
+                        3ds Max is the most widely used 3D creation tool, and native plugin integration lowers the user adoption barrier.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="zero_learning_curve_title">Zero Learning Curve</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="zero_learning_curve_desc">Use familiar 3ds Max interface without additional training</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="workflow_continuity_title">Workflow Continuity</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="workflow_continuity_desc">Seamlessly integrate into existing 3ds Max workflows</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="synergy_effect_title">Ecosystem Synergy Effect</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="synergy_effect_desc">Leverage the complete 3ds Max ecosystem and asset library</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. V-Ray渲染器兼容性 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-layer-group text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4" data-i18n="vray_compatibility_title">V-Ray Renderer Compatibility</h3>
+                    <p class="text-dark/70 mb-6" data-i18n="vray_compatibility_desc">
+                        Fully compatible with the widely used V-Ray renderer, eliminating migration costs and protecting existing digital asset investments.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="consistent_results_title">Highly Consistent Rendering Results</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="consistent_results_desc">Match V-Ray's rendering quality and visual effects exactly</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="vray_full_feature_title">Full Feature Support</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="vray_full_feature_desc">Support all core V-Ray features and rendering parameters</p>
+                        </div>
+                        <div class="tech-point">
+                            <h4 class="font-semibold text-dark" data-i18n="distributed_vray_title">Seamless Distributed Rendering</h4>
+                            <p class="text-dark/60 text-sm" data-i18n="distributed_vray_desc">Built-in distributed rendering architecture with zero configuration</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 差异化价值 -->
+    <section id="value" class="py-20 bg-primary/5">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold mb-4" data-i18n="differentiated_value_title">Differentiated Value Proposition</h2>
+                <p class="text-dark/70 max-w-2xl mx-auto" data-i18n="differentiated_value_desc">
+                    KooRender delivers unique value that traditional local rendering and other cloud rendering solutions cannot match.
+                </p>
+            </div>
+
+            <!-- 差异化价值卡片 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 1. 突破本地GPU限制 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-microchip text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="break_gpu_limit_title">Break Local GPU Limitations</h3>
+                    <p class="text-dark/70" data-i18n="break_gpu_limit_desc">
+                        Near-unlimited computing power scaling to handle complex rendering tasks on demand, without being constrained by local GPU performance.
+                    </p>
+                </div>
+
+                <!-- 2. 实时迭代效率 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-hourglass-half text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="iteration_efficiency_title">Real-time Iteration Efficiency</h3>
+                    <p class="text-dark/70" data-i18n="iteration_efficiency_desc">
+                        Significantly improve design process efficiency and reduce the cost of final deliverables with instant feedback on every adjustment.
+                    </p>
+                </div>
+
+                <!-- 3. 弹性成本结构 -->
+                <div class="feature-card bg-white rounded-xl shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-coins text-primary text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="flexible_cost_title">Flexible Cost Structure</h3>
+                    <p class="text-dark/70" data-i18n="flexible_cost_desc">
+                        Pay-as-you-go pricing model (free for a limited time) aligns costs directly with value creation, eliminating wasted investment in idle hardware.
+                    </p>
+                    <!-- 限时免费提示 -->
+                    <div class="mt-6 inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                        <i class="fa-solid fa-tag mr-2"></i> <span data-i18n="limited_time_free_access">Limited-time Free Access</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 传统渲染 vs 云渲染对比 -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl font-bold mb-8 text-center" data-i18n="vs_title">Traditional Local Rendering vs KooRender Cloud Rendering</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-primary/5">
+                                <th class="border border-gray-200 px-6 py-4 text-left" data-i18n="vs_aspect">Aspect</th>
+                                <th class="border border-gray-200 px-6 py-4 text-left" data-i18n="vs_traditional">Traditional Local Rendering</th>
+                                <th class="border border-gray-200 px-6 py-4 text-left" data-i18n="vs_koorender">KooRender Cloud Rendering</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-200 px-6 py-4 font-medium" data-i18n="vs_response_time">Response Time</td>
+                                <td class="border border-gray-200 px-6 py-4 text-dark/70" data-i18n="vs_response_time_trad">Minutes to hours per iteration</td>
+                                <td class="border border-gray-200 px-6 py-4 text-primary font-medium" data-i18n="vs_response_time_koo">&lt; 2 seconds per adjustment</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-200 px-6 py-4 font-medium" data-i18n="vs_hardware_cost">Hardware Cost</td>
+                                <td class="border border-gray-200 px-6 py-4 text-dark/70" data-i18n="vs_hardware_cost_trad">High upfront investment ($10k+ per workstation)</td>
+                                <td class="border border-gray-200 px-6 py-4 text-primary font-medium" data-i18n="vs_hardware_cost_koo">Flexible subscription (free trial)</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-200 px-6 py-4 font-medium" data-i18n="vs_scalability">Scalability</td>
+                                <td class="border border-gray-200 px-6 py-4 text-dark/70" data-i18n="vs_scalability_trad">Limited to local GPU/CPU</td>
+                                <td class="border border-gray-200 px-6 py-4 text-primary font-medium" data-i18n="vs_scalability_koo">Unlimited on-demand scaling</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td class="border border-gray-200 px-6 py-4 font-medium" data-i18n="vs_workflow">Workflow</td>
+                                <td class="border border-gray-200 px-6 py-4 text-dark/70" data-i18n="vs_workflow_trad">Disruptive "adjust-wait-evaluate" cycle</td>
+                                <td class="border border-gray-200 px-6 py-4 text-primary font-medium" data-i18n="vs_workflow_koo">Seamless real-time iteration</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 区域 -->
+    <section class="py-20 bg-primary/10">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold mb-6" data-i18n="cta_section_title">Ready to Experience the Future of Rendering?</h2>
+            <p class="text-dark/70 max-w-2xl mx-auto mb-8 text-lg" data-i18n="cta_section_desc">
+                Join thousands of designers and studios already using KooRender to transform their 3D rendering workflows.
+            </p>
+            <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium inline-block" data-i18n="cta_trial_btn">
+                Start Your Free Trial Today
+            </a>
+        </div>
+    </section>
+
+    <!-- 页脚（与原页面一致） -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="/" class="block">
+						<img src="https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png" 
+							 alt="KooRender" 
+							 class="h-8 w-auto">
+					</a>
+                    <p class="text-white/70 mb-4" data-i18n="hero_tagline">Cloud-based Real-time Renderer</p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/manycoretech/koorender-max" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
+                        <a href="https://www.linkedin.com/company/kujiale" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
+                        <a href="https://x.com/coohom" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_product">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="features.html" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_documentation">Documentation</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_pricing">Pricing</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_api">API</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_company">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://manycoretech.com/about?active=1" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_about_us">About Us</a></li>
+                        <li><a href="https://manycoretech.com/about?active=2" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_careers">Careers</a></li>
+                        <li><a href="https://github.com/KooRender/koorender.github.io/discussions" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_discussions">Discussions</a></li>
+                        <li><a href="https://manycoretech.com/news-center" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_press">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_support">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.coohom.com/helpcenter" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_help_center">Help Center</a></li>
+                        <li><a href="mailto:koorender@qunhemail.com" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_contact_us">Contact Us</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/user-agreement" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_terms_of_service">Terms of Service</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_privacy_policy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm" data-i18n="footer_copyright">
+                © 2026 KooRender. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript（与原页面一致） -->
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

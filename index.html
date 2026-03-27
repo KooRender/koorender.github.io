@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 缓存控制标签（对浏览器缓存有一定作用） -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="page_title_home">KooRender - Cloud-based Real-time Renderer</title>
+    <!-- Tailwind CSS CDN for quick styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- i18n support -->
+    <script src="js/i18n.js?v=20260320.1"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0A2463',
+                        accent: '#3E92CC',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2B3A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .feature-card-hover {
+                transition: all 0.3s ease;
+            }
+            .feature-card-hover:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 24px rgba(22, 93, 255, 0.15);
+            }
+        }
+    </style>
+    
+    <style>
+    /* 悬浮容器：固定在右下角 */
+    .floating-qr {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 9999;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      text-align: center; /* 让文字和图片居中 */
+    }
+
+    /* 二维码图片 */
+    .floating-qr img {
+      width: 160px;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* 图片居中（兜底） */
+    }
+
+    /* 下方文字样式 */
+    .qr-text {
+      margin: 8px 0 0; /* 文字和二维码间距 */
+      font-size: 14px; /* 字号 */
+      color: #333;     /* 文字颜色 */
+      line-height: 1.2;/* 行高，避免文字重叠 */
+    }
+
+    /* 可选：悬停轻微放大，增加交互感 */
+    .floating-qr {
+      transition: transform 0.2s ease;
+    }
+    .floating-qr:hover {
+      transform: scale(1.05);
+    }
+  </style>
+    
+    <script>
+    (function() {
+		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
+		if (window.location.hostname.includes('koorender.com')) {
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-K936WG5');
+		}
+	})();
+    </script>
+</head>
+<body class="font-sans text-dark bg-white">
+  <!-- 悬浮二维码（带文字） -->
+  <div class="floating-qr" id="qrContainer">
+    <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
+    <p class="qr-text">扫码加入用户群</p>
+  </div>
+  
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="block">
+				<img src="https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png" 
+					 alt="KooRender" 
+					 class="h-8 w-auto">
+			</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button onclick="toggleLangDropdown(event)" class="flex items-center gap-1 text-dark/80 hover:text-primary transition-colors font-medium border border-dark/20 px-3 py-1 rounded-md text-sm">
+                        <span class="lang-current-text">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div class="lang-dropdown-menu hidden absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-[60]">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">English</button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_get_started">Get Started</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-dark text-xl" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Choice (Mobile) -->
+                <div class="flex flex-col gap-2 py-2">
+                    <p class="text-dark/40 text-xs font-bold uppercase tracking-wider" data-i18n="footer_support">Language</p>
+                    <div class="flex gap-4">
+                        <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
+                        <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center" data-i18n="nav_get_started">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 bg-gradient-to-b from-neutral to-white">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-10">
+            <div class="md:w-1/2 space-y-6">
+                <h1 class="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-tight text-shadow" data-i18n="hero_title">
+                    Cloud-based <span class="text-primary">Real-time Rendering</span>
+                </h1>
+                <p class="text-lg text-dark/70 leading-relaxed" data-i18n="hero_desc">
+                    Experience physically realistic, high-quality rendering anytime, anywhere—no local high-end machines required. 
+                    KooRender redefines 3D rendering with cloud power and AI intelligence.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium" data-i18n="hero_demo_btn">
+                        Try Free Demo
+                    </a>
+                    <a href="learn_more.html" class="border border-primary text-primary px-8 py-3 rounded-lg hover:bg-primary/5 transition-colors text-lg font-medium" data-i18n="hero_learn_more_btn">
+                        Learn More
+                    </a>
+                </div>
+                <div class="flex items-center gap-4 text-dark/60">
+                    <div class="flex -space-x-2">
+                        <img src="https://picsum.photos/40/40?random=1" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                        <img src="https://picsum.photos/40/40?random=2" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                        <img src="https://picsum.photos/40/40?random=3" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                    </div>
+                    <p class="text-sm" data-i18n="hero_trusted_by">Trusted by 1000+ professionals worldwide</p>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <img src="https://qhstaticssl.kujiale.com/image/gif/1773371026897/5436B6C008773E5AB56F75DA02E39984.gif" alt="KooRender Demo" class="rounded-xl shadow-2xl w-full">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold mb-4" data-i18n="features_section_title">Powerful Features for Every Creator</h2>
+                <p class="text-dark/70 max-w-2xl mx-auto" data-i18n="features_section_desc">Built with over a decade of rendering and cloud computing expertise, KooRender delivers unmatched performance and flexibility.</p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1: Physically Realistic -->
+                <div class="bg-white rounded-xl shadow-lg p-6 feature-card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-cubes-stacked text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feature_physically_realistic_title">Physically Realistic</h3>
+                    <p class="text-dark/70 mb-4 min-h-[2lh]" data-i18n="feature_physically_realistic_desc">Achieve studio-quality, physically accurate rendering with our decade-proven technology stack.</p>
+                    <img src="https://qhstaticssl.kujiale.com/image/gif/1773994547910/45D5ADAE8E5CB2419B0BD003A1A499A2.gif" alt="Physically Realistic Rendering" class="w-full h-48 object-cover rounded-lg">
+                </div>
+
+                <!-- Feature 2: Anytime, Anywhere -->
+                <div class="bg-white rounded-xl shadow-lg p-6 feature-card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-globe text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feature_anytime_anywhere_title">Anytime, Anywhere</h3>
+                    <p class="text-dark/70 mb-4 min-h-[2lh]" data-i18n="feature_anytime_anywhere_desc">Enjoy interactive cloud rendering without local high-end hardware—at an affordable cost.</p>
+                    <img src="https://qhstaticssl.kujiale.com/image/gif/1773992161435/9433E5CE11DEB3E37985E2A5742664E3.gif" alt="Anytime Anywhere Access" class="w-full h-48 object-cover rounded-lg">
+                </div>
+
+                <!-- Feature 3: Compatibility -->
+                <div class="bg-white rounded-xl shadow-lg p-6 feature-card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-puzzle-piece text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feature_compatibility_title">Compatibility</h3>
+                    <p class="text-dark/70 mb-4 min-h-[2lh]" data-i18n="feature_compatibility_desc">Seamlessly integrate with 3ds Max workflows and reuse your existing local assets.</p>
+                    <img src="https://qhstaticssl.kujiale.com/image/gif/1773992223621/681EB285C36B7A0F1B227D335261D606.gif" alt="3ds Max Compatibility" class="w-full h-48 object-cover rounded-lg">
+                </div>
+
+                <!-- Feature 4: Open-source -->
+                <div class="bg-white rounded-xl shadow-lg p-6 feature-card-hover">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-code-branch text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feature_open_source_title">Open-source Plugin</h3>
+                    <p class="text-dark/70 mb-4 min-h-[2lh]" data-i18n="feature_open_source_desc">Fully open-source plugin enables third-party customization to boost your productivity.</p>
+                    <img src="https://qhstaticssl.kujiale.com/image/gif/1773992283899/44865F4A8B75A3D7B4736B5471941FB5.gif" alt="Open-source Plugin" class="w-full h-48 object-cover rounded-lg">
+                </div>
+
+                <!-- Feature 5: Built-in AI -->
+                <div class="bg-white rounded-xl shadow-lg p-6 feature-card-hover md:col-span-2 lg:col-span-1">
+                    <div class="w-14 h-14 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-robot text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feature_built_in_ai_title">Built-in AI</h3>
+                    <p class="text-dark/70 mb-4 min-h-[2lh]" data-i18n="feature_built_in_ai_desc">Generate and render 3D gaussians with our fine-tuned AI denoiser for faster, better results.</p>
+                    <img src="https://qhstaticssl.kujiale.com/image/gif/1773992323374/EF61F89A45DA723385944ACD34B0F3A8.gif" alt="Built-in AI Features" class="w-full h-48 object-cover rounded-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-primary/5">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-[clamp(1.8rem,3vw,2.5rem)] font-bold mb-6" data-i18n="cta_section_title">Ready to Transform Your Rendering Workflow?</h2>
+            <p class="text-dark/70 max-w-2xl mx-auto mb-8 text-lg" data-i18n="cta_section_desc">Join thousands of creators who are already using KooRender to create stunning visuals with ease.</p>
+            <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium inline-block" data-i18n="cta_trial_btn">
+                Start Your Free Trial Today
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="/" class="block">
+						<img src="https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png" 
+							 alt="KooRender" 
+							 class="h-8 w-auto">
+					</a>
+                    <p class="text-white/70 mb-4" data-i18n="hero_tagline">Cloud-based Real-time Renderer</p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/manycoretech/koorender-max" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
+                        <a href="https://www.linkedin.com/company/kujiale" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
+                        <a href="https://x.com/coohom" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_product">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="features.html" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_pricing">Pricing</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_documentation">Documentation</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_api">API</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_company">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://manycoretech.com/about?active=1" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_about_us">About Us</a></li>
+                        <li><a href="https://manycoretech.com/about?active=2" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_careers">Careers</a></li>
+                        <li><a href="https://github.com/KooRender/koorender.github.io/discussions" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_discussions">Discussions</a></li>
+                        <li><a href="https://manycoretech.com/news-center" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_press">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_support">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.coohom.com/helpcenter" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_help_center">Help Center</a></li>
+                        <li><a href="mailto:koorender@qunhemail.com" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_contact_us">Contact Us</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/user-agreement" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_terms_of_service">Terms of Service</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_privacy_policy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm" data-i18n="footer_copyright">
+                © 2026 KooRender. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            // Toggle icon between bars and x
+            const icon = mobileMenuBtn.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Adjust for nav height
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+                    }
+                }
+            });
+        });
+    </script>
+    
+	<script>
+	// 封装字段获取工具函数
+	const getTrackingFields = {
+		// 获取URL查询参数
+		getUrlParam: function(paramName) {
+			if (!paramName) return 'unknown';
+			const searchParams = new URLSearchParams(window.location.search);
+			return searchParams.get(paramName)?.trim() || 'unknown';
+		},
+		// 获取语言（lang）
+		getLang: function() {
+			// 优先级：URL参数 > 浏览器语言 > 默认值
+			const urlLang = this.getUrlParam('lang');
+			if (urlLang !== 'unknown') return urlLang.toLowerCase();
+			
+			const browserLang = navigator.language || navigator.userLanguage || 'en-US';
+			return browserLang.toLowerCase();
+		},
+		// 获取地区（region）
+		getRegion: function() {
+			// 优先级：URL参数 > 从语言推导 > 默认值
+			const urlRegion = this.getUrlParam('region');
+			if (urlRegion !== 'unknown') return urlRegion.toUpperCase();
+			
+			// 从语言推导（如zh-CN → CN）
+			const lang = this.getLang();
+			const langRegion = lang.split('-')[1] || 'US';
+			return langRegion.toUpperCase();
+		},
+		// 获取所有追踪字段
+		getAllFields: function() {
+			return {
+				lang: this.getLang(),
+				region: this.getRegion(),
+				utmSource: this.getUrlParam('utm_source'),
+				utmMedium: this.getUrlParam('utm_medium'),
+				utmCampaign: this.getUrlParam('utm_campaign')
+			};
+		}
+	};
+	
+	async function sendTrackingData() {
+		// 动态获取所有字段并赋值
+		const properties = getTrackingFields.getAllFields();
+		
+		// 上报埋点
+		const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_view/log";
+
+		try {
+			const res = await fetch(url, {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(properties)
+			});
+		} catch (err) {
+			// 捕获请求异常，避免页面报错
+			console.error("Report failed: ", err);
+		}
+	}
+	
+	sendTrackingData();
+	</script>
+	
+	<script>
+    // 检测语言并控制二维码显示
+    function checkLanguageAndShowQR() {
+      // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
+      const pageLang = document.documentElement.lang || '';
+      const browserLang = navigator.language || navigator.userLanguage || '';
+      
+      // 2. 判断是否为中文（包含简体zh-CN、繁体zh-TW/zh-HK等）
+      const isChinese = pageLang.startsWith('zh') || browserLang.startsWith('zh');
+      
+      // 3. 显示/隐藏二维码
+      const qrContainer = document.getElementById('qrContainer');
+      if (isChinese) {
+        qrContainer.style.display = 'block'; // 中文环境显示
+      } else {
+        qrContainer.style.display = 'none';  // 非中文环境隐藏
+      }
+    }
+
+    // 页面加载完成后执行检测
+    window.onload = checkLanguageAndShowQR;
+  </script>
+</body>
+</html>
