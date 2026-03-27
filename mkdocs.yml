@@ -1,5 +1,5 @@
 site_name: KooRender Docs
-site_url: https://koorender.com/docs/
+site_url: https://koorender.com/
 site_dir: site/docs
 
 theme:
