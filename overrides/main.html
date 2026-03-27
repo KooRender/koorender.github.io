@@ -11,12 +11,12 @@
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
   <select onchange="if(this.value) window.location.href=this.value;">
-    {% if config.site_dir == 'site/zh' %}
-    <option value="/zh/" selected>中文</option>
-    <option value="/en/">English</option>
+    {% if config.site_dir == 'site/docs/zh' %}
+    <option value="/docs/zh/" selected>中文</option>
+    <option value="/docs/en/">English</option>
     {% else %}
-    <option value="/zh/">中文</option>
-    <option value="/en/" selected>English</option>
+    <option value="/docs/zh/">中文</option>
+    <option value="/docs/en/" selected>English</option>
     {% endif %}
   </select>
 </div>
