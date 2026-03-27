@@ -7,16 +7,20 @@
 {% block header %}
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
-  <select on="window.location.href=this.value;">
-    {% set path = page.url | trim('/') %}
-    
-    {% if config.language == 'zh' %}
-    <option value="/docs/zh/{{ path }}" selected>中文</option>
-    <option value="/docs/en/{{ path }}">English</option>
-    {% else %}
-    <option value="/docs/zh/{{ path }}">中文</option>
-    <option value="/docs/en/{{ path }}" selected>English</option>
-    {% endif %}
+  <select id="langSwitch">
+    <option value="zh" {% if config.language == 'zh' %}selected{% endif %}>中文</option>
+    <option value="en" {% if config.language == 'en' %}selected{% endif %}>English</option>
   </select>
+
+  <script>
+    document.getElementById('langSwitch').addEventListener('change', function() {
+      let lang = this.value;
+      let path = window.location.pathname;
+      
+      // 自动替换 en ↔ zh，保持后面路径不变
+      let newPath = path.replace(/\/(zh|en)\//, `/${lang}/`);
+      window.location.href = newPath;
+    });
+  </script>
 </div>
 {% endblock %}
