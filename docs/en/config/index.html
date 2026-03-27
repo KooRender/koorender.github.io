@@ -179,13 +179,40 @@
   
 </header>
     
-<div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
-  <select onchange="if(this.value) window.location.href=this.value;">
-    
-    <option value="/docs/zh/">中文</option>
-    <option value="/docs/en/" selected>English</option>
-    
-  </select>
+
+<!-- 语言切换 - 集成到 Material 主题导航栏，风格完全一致 -->
+<div class="md-header__option">
+  <div class="md-select">
+    <button
+      class="md-select__button"
+      aria-label="Change language"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <i class="md-icon md-icon--translate md-select__icon"></i>
+      <span class="md-select__label">
+        English
+      </span>
+    </button>
+    <select
+      class="md-select__select"
+      onchange="location.href=this.value"
+      aria-label="Select language"
+    >
+      <option
+        value="/docs/zh/config/"
+        
+      >
+        中文
+      </option>
+      <option
+        value="/docs/en/config/"
+        
+      >
+        English
+      </option>
+    </select>
+  </div>
 </div>
 
     <div class="md-container" data-md-component="container">
@@ -544,12 +571,10 @@
     
     
     
-
       
       
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
-
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
