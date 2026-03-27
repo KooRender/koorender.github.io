@@ -1,0 +1,9 @@
+site_name: KooRender 文档中心
+site_url: https://koorender.github.io/
+site_dir: site
+
+theme:
+  name: material
+
+nav:
+  - 首页: index.md
