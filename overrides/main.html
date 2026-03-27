@@ -7,14 +7,15 @@
 {% block header %}
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
-  <select onchange="if(this.value) window.location.href=this.value;">
-    {% set current_path = page.url %}
+  <select on="window.location.href=this.value;">
+    {% set path = page.url | trim('/') %}
+    
     {% if config.language == 'zh' %}
-    <option value="/docs/zh/{{ current_path }}" selected>中文</option>
-    <option value="/docs/en/{{ current_path }}">English</option>
+    <option value="/docs/zh/{{ path }}" selected>中文</option>
+    <option value="/docs/en/{{ path }}">English</option>
     {% else %}
-    <option value="/docs/zh/{{ current_path }}">中文</option>
-    <option value="/docs/en/{{ current_path }}" selected>English</option>
+    <option value="/docs/zh/{{ path }}">中文</option>
+    <option value="/docs/en/{{ path }}" selected>English</option>
     {% endif %}
   </select>
 </div>
