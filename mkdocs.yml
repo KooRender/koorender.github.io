@@ -1,9 +1,29 @@
 site_name: KooRender 文档中心
 site_url: https://koorender.github.io/
-site_dir: site
 
 theme:
   name: material
+  features:
+    - navigation.tabs          # 顶部标签（可选）
+    - navigation.sections       # 左侧目录展开
+    - navigation.indexes        # 章节支持 index.md
+    - toc.integrate             # 右侧目录自动嵌入侧边栏
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
 
+# 开启左侧边栏 + 右侧目录
+plugins:
+  - search
+
+markdown_extensions:
+  - toc:
+      permalink: true           # 标题自动生成锚点
+
+# 左侧边栏目录（在这里加页面！）
 nav:
   - 首页: index.md
+  - 快速开始: start.md
+  - 使用教程: guide.md
+  - 高级配置: config.md
