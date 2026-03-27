@@ -1,36 +1,43 @@
-site_name: 文档中心
-site_url: https://koorender.com/
+site_name: KooRender Docs
+site_url: https://koorender.com/docs/
 site_dir: site/docs
 
 theme:
   name: material
+  language: zh
   logo: https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png
   features:
+    - navigation.instant
+    - navigation.tracking
     - navigation.sections
     - navigation.expand
-    - toc.integrate
     - navigation.top
+    - toc.follow
   palette:
-    scheme: default
-    primary: blue
-    accent: blue
-    
-extra:
-  social:
-    - icon: fontawesome/solid/house
-      link: https://koorender.com/
-    - icon: fontawesome/brands/github
-      link: https://github.com/manycoretech/koorender-max
+    - scheme: default
+      primary: blue
+      accent: light-blue
 
+# 👇 核心：mkdocs-static-i18n 多语言插件
 plugins:
-  - search
+  - search:
+      lang: [zh, en]
+  - i18n:
+      default_language: zh
+      languages:
+        zh: 简体中文
+        en: English
+      material_alternate: true
+      fallback_to_default: true
+      reconfigure_material: true
 
-markdown_extensions:
-  - toc:
-      permalink: true
-
+# 导航只写一次，自动适配所有语言
 nav:
   - 首页: index.md
   - 快速开始: start.md
   - 使用教程: guide.md
   - 高级配置: config.md
+
+markdown_extensions:
+  - toc:
+      permalink: true

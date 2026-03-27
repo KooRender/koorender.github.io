@@ -20,19 +20,19 @@ jobs:
           python-version: 3.x
 
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material
+        run: |
+          pip install mkdocs mkdocs-material mkdocs-static-i18n
 
       - name: Build MkDocs
         run: mkdocs build
 
-      # 👇 这一段一次性复制所有文件
-      - name: Copy all static files
+      - name: Copy all static files (html, js, CNAME)
         run: |
           cp *.html site/
           cp -R js/ site/
-          cp CNAME site/  # 👈 这一行解决域名 404！
+          cp CNAME site/
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
