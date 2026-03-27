@@ -25,6 +25,12 @@ jobs:
       - name: Build MkDocs
         run: mkdocs build
 
+      # 👇 这一段一次性复制所有文件
+      - name: Copy all static files
+        run: |
+          cp *.html site/
+          cp -R js/ site/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
