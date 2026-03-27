@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-material mkdocs-static-i18n
+          pip install mkdocs mkdocs-material
 
       - name: Build docs
         run: mkdocs build

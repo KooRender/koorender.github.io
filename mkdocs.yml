@@ -17,22 +17,17 @@ theme:
       primary: blue
       accent: light-blue
 
+extra:
+  alternate:
+    - name: 中文
+      link: /docs/zh/
+      lang: zh
+    - name: English
+      link: /docs/en/
+      lang: en
+      
 plugins:
-  - search:
-      lang:
-        - zh
-        - en
-  - i18n:
-      languages:
-        - locale: zh
-          name: 简体中文
-          default: true
-          build: true
-        - locale: en
-          name: English
-          build: true
-      fallback_to_default: true
-      reconfigure_material: true
+  - search
 
 nav:
   - 首页: zh/index.md
