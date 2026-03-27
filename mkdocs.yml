@@ -1,10 +1,10 @@
-site_name: KooRender 文档中心
+site_name: 文档中心
 site_url: https://koorender.com/
 site_dir: site/docs
 
 theme:
   name: material
-  logo: https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png
+  logo: https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png
   features:
     - navigation.sections
     - navigation.expand
@@ -12,7 +12,7 @@ theme:
     - navigation.top
   palette:
     scheme: default
-    primary: blue-grey
+    primary: blue
     accent: blue
     
 extra:
