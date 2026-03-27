@@ -7,7 +7,6 @@ theme:
   language: zh
   logo: https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png
   features:
-    - navigation.instant
     - navigation.tracking
     - navigation.sections
     - navigation.expand
@@ -32,16 +31,14 @@ plugins:
         - locale: en
           name: English
           build: true
-      material_alternate: true
       fallback_to_default: true
       reconfigure_material: true
-      auto_redirect: true
 
 nav:
-  - 首页: index.md
-  - 快速开始: start.md
-  - 使用教程: guide.md
-  - 高级配置: config.md
+  - 首页: zh/index.md
+  - 快速开始: zh/start.md
+  - 使用教程: zh/guide.md
+  - 高级配置: zh/config.md
 
 markdown_extensions:
   - toc:
