@@ -30,6 +30,7 @@ jobs:
         run: |
           cp *.html site/
           cp -R js/ site/
+          cp CNAME site/  # 👈 这一行解决域名 404！
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
