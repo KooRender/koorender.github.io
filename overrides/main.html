@@ -8,12 +8,13 @@
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
   <select onchange="if(this.value) window.location.href=this.value;">
+    {% set current_path = page.url %}
     {% if config.language == 'zh' %}
-    <option value="/docs/zh/" selected>中文</option>
-    <option value="/docs/en/">English</option>
+    <option value="/docs/zh/{{ current_path }}" selected>中文</option>
+    <option value="/docs/en/{{ current_path }}">English</option>
     {% else %}
-    <option value="/docs/zh/">中文</option>
-    <option value="/docs/en/" selected>English</option>
+    <option value="/docs/zh/{{ current_path }}">中文</option>
+    <option value="/docs/en/{{ current_path }}" selected>English</option>
     {% endif %}
   </select>
 </div>
