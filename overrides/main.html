@@ -4,14 +4,11 @@
 {{ super() }}
 {% endblock %}
 
-{% block extrahead %}
-{% endblock %}
-
 {% block header %}
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
   <select onchange="if(this.value) window.location.href=this.value;">
-    {% if config.site_dir == 'site/docs/zh' %}
+    {% if config.language == 'zh' %}
     <option value="/docs/zh/" selected>中文</option>
     <option value="/docs/en/">English</option>
     {% else %}
