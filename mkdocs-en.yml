@@ -1,8 +1,8 @@
 site_name: KooRender Docs
 site_url: https://koorender.com/docs/
-site_dir: site/zh
-docs_dir: docs
-language: zh
+site_dir: site/en
+docs_dir: docs_en
+language: en
 
 theme:
   name: material
@@ -22,10 +22,10 @@ plugins:
   - search
 
 nav:
-  - 首页: index.md
-  - 快速开始: start.md
-  - 使用教程: guide.md
-  - 高级配置: config.md
+  - Home: index.md
+  - Get Started: start.md
+  - User Manual: guide.md
+  - Advanced Configurations: config.md
 
 markdown_extensions:
   - toc:
