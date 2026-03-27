@@ -12,7 +12,7 @@ theme:
     - navigation.top
   palette:
     scheme: default
-    primary: blue
+    primary: blue-grey
     accent: blue
     
 extra:
