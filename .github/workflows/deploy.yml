@@ -30,7 +30,6 @@ jobs:
         run: |
           cp *.html site/
           cp -R js/ site/
-          cp -R assets/ site/
           cp CNAME site/
           cp docs/index.html site/docs/index.html
 
