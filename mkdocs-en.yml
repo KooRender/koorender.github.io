@@ -19,6 +19,13 @@ theme:
       primary: blue
       accent: light-blue
       
+extra:
+  social:
+    - icon: fontawesome/solid/house
+      link: https://koorender.com/
+    - icon: fontawesome/brands/github
+      link: https://github.com/manycoretech/koorender-max
+      
 plugins:
   - search
 
