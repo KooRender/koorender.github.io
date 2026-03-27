@@ -1,6 +1,9 @@
-# 文档中心
+# 文档首页
 
-这里是 MkDocs 自动构建的文档页面。
+欢迎使用 KooRender 文档中心。
 
-## 返回主页
-[返回首页](https://koorender.github.io/)
+## 导航
+- 左侧是完整目录
+- 右侧是当前页面标题导航
+
+[返回主页](https://koorender.github.io/)
