@@ -33,7 +33,7 @@ jobs:
           cp *.html site/
           cp -R js/ site/
           cp CNAME site/
-          cp docs_util/index.html site/index.html
+          cp docs_util/index.html site/docs/index.html
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
