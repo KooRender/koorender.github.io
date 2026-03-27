@@ -1,19 +1,15 @@
 {% extends "base.html" %}
 
-{% block config %}
-{{ super() }}
-{% endblock %}
-
 {% block header %}
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
-  <select onchange="if(this.value) window.location.href=this.value;">
+  <select onchange="window.location.href=this.value" style="padding:4px 8px; border-radius:6px; border:1px solid #ccc; font-size:14px;">
     {% if config.language == 'zh' %}
-    <option value="/docs/zh/" selected>中文</option>
-    <option value="/docs/en/">English</option>
+    <option value="{{ page.url | replace('/en/', '/zh/') | prepend: '/docs' }}" selected>中文</option>
+    <option value="{{ page.url | replace('/zh/', '/en/') | prepend: '/docs' }}">English</option>
     {% else %}
-    <option value="/docs/zh/">中文</option>
-    <option value="/docs/en/" selected>English</option>
+    <option value="{{ page.url | replace('/en/', '/zh/') | prepend: '/docs' }}">中文</option>
+    <option value="{{ page.url | replace('/zh/', '/en/') | prepend: '/docs' }}" selected>English</option>
     {% endif %}
   </select>
 </div>
