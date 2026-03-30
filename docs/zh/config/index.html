@@ -195,6 +195,8 @@
 
         const newPath = currentPath.replace(/\/docs\/(zh|en)\//, `/docs/${targetLang}/`);
         window.location.href = newPath;
+        
+        sel.value = targetLang;
       });
     });
   </script>
