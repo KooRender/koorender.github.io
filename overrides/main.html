@@ -1,25 +1,23 @@
 {% extends "base.html" %}
 
-{% block config %}
-{{ super() }}
-{% endblock %}
-
 {% block header %}
 {{ super() }}
 <div style="position: absolute; top: 15px; right: 80px; z-index: 1000;">
   <select id="langSwitch">
-    <option value="zh" {% if config.language == 'zh' %}selected{% endif %}>中文</option>
-    <option value="en" {% if config.language == 'en' %}selected{% endif %}>English</option>
+    <option value="zh" {% if config.language == "zh" %}selected{% endif %}>中文</option>
+    <option value="en" {% if config.language == "en" %}selected{% endif %}>English</option>
   </select>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const sel = document.getElementById('langSwitch');
-      sel.addEventListener('change', function() {
-        const newLang = this.value;
-        const path = window.location.pathname;
-        const newUrl = path.replace(/\/(en|zh)\//, `/${newLang}/`);
-        window.location.href = newUrl;
+
+      sel.addEventListener('change', function () {
+        const targetLang = this.value;
+        const currentPath = window.location.pathname;
+
+        const newPath = currentPath.replace(/\/docs\/(zh|en)\//, `/docs/${targetLang}/`);
+        window.location.href = newPath;
       });
     });
   </script>
