@@ -430,7 +430,7 @@
 		}
 	};
 	
-	async function sendTrackingData() {
+	async function sendDownloadTrackingData() {
 		// 动态获取所有字段并赋值
 		const properties = getTrackingFields.getAllFields();
 		
@@ -451,7 +451,7 @@
 		}
 	}
 	function handleDownloadClick(event) {
-		sendTrackingData();
+		sendDownloadTrackingData();
 	}
 	</script>
 	
