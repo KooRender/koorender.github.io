@@ -174,7 +174,7 @@
                     KooRender redefines 3D rendering with cloud power and AI intelligence.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="get_started.html" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium" data-i18n="hero_demo_btn">
+                    <a href="https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip" target="_blank" rel="noopener noreferrer" download class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium" data-i18n="hero_demo_btn" onclick="handleDownloadClick(event)">
                         Try Free Demo
                     </a>
                     <a href="learn_more.html" class="border border-primary text-primary px-8 py-3 rounded-lg hover:bg-primary/5 transition-colors text-lg font-medium" data-i18n="hero_learn_more_btn">
@@ -425,6 +425,30 @@
 	}
 	
 	sendTrackingData();
+	
+	async function sendDownloadTrackingData() {
+		// 动态获取所有字段并赋值
+		const properties = getTrackingFields.getAllFields();
+		
+		// 上报埋点
+		const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_download/log";
+
+		try {
+			const res = await fetch(url, {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(properties)
+			});
+		} catch (err) {
+			// 捕获请求异常，避免页面报错
+			console.error("Report failed: ", err);
+		}
+	}
+	function handleDownloadClick(event) {
+		sendDownloadTrackingData();
+	}
 	</script>
 	
 	<script>
