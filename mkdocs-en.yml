@@ -31,8 +31,6 @@ plugins:
 nav:
   - Home: index.md
   - Get Started: start.md
-  - User Manual: guide.md
-  - Advanced Configurations: config.md
 
 markdown_extensions:
   - toc:
