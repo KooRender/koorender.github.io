@@ -259,6 +259,92 @@
 		margin-top: 20px;
 		line-height: 1.4;
 	}
+
+    /* 用户信息下拉菜单样式 */
+    .user-menu-container {
+        position: relative;
+        display: inline-block;
+    }
+    .user-avatar-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 24px;
+        border: 1px solid #eee;
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .user-avatar-btn:hover {
+        background: #f7f9ff;
+        border-color: #165DFF;
+    }
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .user-email {
+        font-size: 14px;
+        color: #333;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .user-dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        width: 200px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        padding: 8px 0;
+        z-index: 100;
+        display: none;
+    }
+    .user-dropdown-menu.active {
+        display: block;
+    }
+    .user-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #333;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .user-dropdown-item:hover {
+        background: #f7f9ff;
+        color: #165DFF;
+    }
+    .user-dropdown-divider {
+        height: 1px;
+        background: #eee;
+        margin: 8px 0;
+    }
+    .login-btn {
+        background: #165DFF;
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+    }
+    .login-btn:hover {
+        background: #0047cc;
+    }
   </style>
     
     <script>
@@ -363,6 +449,42 @@
                     </div>
                 </div>
 
+                <!-- 登录/用户信息区域 -->
+                <div id="authSection">
+                    <!-- 未登录状态 - 登录按钮 -->
+                    <button class="login-btn" id="headerLoginBtn">
+                        <i class="fa-solid fa-user mr-2"></i>Login
+                    </button>
+                    
+                    <!-- 已登录状态 - 用户信息（默认隐藏） -->
+                    <div class="user-menu-container hidden" id="userMenuContainer">
+                        <button class="user-avatar-btn" id="userAvatarBtn">
+                            <img src="" alt="User Avatar" class="user-avatar" id="userAvatarImg">
+                            <span class="user-email" id="userEmailText"></span>
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <div class="user-dropdown-item">
+                                <i class="fa-solid fa-user-circle"></i>
+                                <span>My Profile</span>
+                            </div>
+                            <div class="user-dropdown-item">
+                                <i class="fa-solid fa-cog"></i>
+                                <span>Settings</span>
+                            </div>
+                            <div class="user-dropdown-item">
+                                <i class="fa-solid fa-cloud-download"></i>
+                                <span>My Downloads</span>
+                            </div>
+                            <div class="user-dropdown-divider"></div>
+                            <div class="user-dropdown-item" id="logoutBtn">
+                                <i class="fa-solid fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <a href="get_started.html" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_get_started">Get Started</a>
             </div>
             <!-- Mobile Menu Button -->
@@ -383,6 +505,24 @@
                     <div class="flex gap-4">
                         <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
                         <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <!-- 移动端登录/用户信息 -->
+                <div class="py-2" id="mobileAuthSection">
+                    <button class="login-btn w-full justify-center flex items-center" id="mobileLoginBtn">
+                        <i class="fa-solid fa-user mr-2"></i>Login
+                    </button>
+                    
+                    <!-- 已登录状态 - 移动端（默认隐藏） -->
+                    <div class="hidden py-2" id="mobileUserInfo">
+                        <div class="flex items-center gap-3 p-3 bg-neutral rounded-lg mb-2">
+                            <img src="" alt="User Avatar" class="w-10 h-10 rounded-full" id="mobileUserAvatar">
+                            <div>
+                                <p class="font-medium" id="mobileUserEmail"></p>
+                                <button class="text-primary text-sm" id="mobileLogoutBtn">Logout</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -604,6 +744,24 @@
         const registerBtn = document.getElementById('registerBtn');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
 
+        // 头部登录按钮
+        const headerLoginBtn = document.getElementById('headerLoginBtn');
+        const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+
+        // 用户信息相关元素
+        const userMenuContainer = document.getElementById('userMenuContainer');
+        const userAvatarBtn = document.getElementById('userAvatarBtn');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+        const userAvatarImg = document.getElementById('userAvatarImg');
+        const userEmailText = document.getElementById('userEmailText');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // 移动端用户信息
+        const mobileUserInfo = document.getElementById('mobileUserInfo');
+        const mobileUserAvatar = document.getElementById('mobileUserAvatar');
+        const mobileUserEmail = document.getElementById('mobileUserEmail');
+        const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+
         // 打开弹窗
         function openAuthModal() {
             authModal.classList.add('active');
@@ -632,7 +790,69 @@
         // Try Free Demo 点击
         function handleDemoClick(e) {
             e.preventDefault();
-            openAuthModal();
+            // 检查登录状态，如果未登录则打开登录弹窗
+            if (!isUserLoggedIn()) {
+                openAuthModal();
+            } else {
+                // 已登录则直接跳转到下载
+                window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+            }
+        }
+
+        // 检查用户是否登录
+        function isUserLoggedIn() {
+            return localStorage.getItem('userEmail') !== null;
+        }
+
+        // 更新登录状态显示
+        function updateLoginStatus() {
+            if (isUserLoggedIn()) {
+                // 已登录状态
+                const userEmail = localStorage.getItem('userEmail');
+                const userAvatar = localStorage.getItem('userAvatar') || `https://picsum.photos/200/200?random=${userEmail}`;
+                
+                // 桌面端显示用户信息
+                headerLoginBtn.classList.add('hidden');
+                userMenuContainer.classList.remove('hidden');
+                userAvatarImg.src = userAvatar;
+                userEmailText.textContent = userEmail;
+                
+                // 移动端显示用户信息
+                mobileLoginBtn.classList.add('hidden');
+                mobileUserInfo.classList.remove('hidden');
+                mobileUserAvatar.src = userAvatar;
+                mobileUserEmail.textContent = userEmail;
+            } else {
+                // 未登录状态
+                headerLoginBtn.classList.remove('hidden');
+                userMenuContainer.classList.add('hidden');
+                
+                mobileLoginBtn.classList.remove('hidden');
+                mobileUserInfo.classList.add('hidden');
+            }
+        }
+
+        // 模拟登录成功
+        function loginSuccess(email) {
+            // 存储用户信息到本地存储
+            localStorage.setItem('userEmail', email);
+            // 生成随机头像（实际项目中应该从登录接口获取）
+            localStorage.setItem('userAvatar', `https://picsum.photos/200/200?random=${email}`);
+            // 更新登录状态
+            updateLoginStatus();
+            // 关闭弹窗
+            closeAuthModal();
+        }
+
+        // 退出登录
+        function logout() {
+            // 清除本地存储
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userAvatar');
+            // 更新登录状态
+            updateLoginStatus();
+            // 提示退出成功
+            alert('Logout successful!');
         }
 
         // 关闭
@@ -645,6 +865,25 @@
         loginTab.addEventListener('click', () => switchTab('login'));
         registerTab.addEventListener('click', () => switchTab('register'));
 
+        // 头部登录按钮点击
+        headerLoginBtn.addEventListener('click', openAuthModal);
+        mobileLoginBtn.addEventListener('click', openAuthModal);
+
+        // 用户头像按钮点击（切换下拉菜单）
+        userAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle('active');
+        });
+
+        // 点击页面其他区域关闭下拉菜单
+        document.addEventListener('click', () => {
+            userDropdownMenu.classList.remove('active');
+        });
+
+        // 退出登录按钮点击
+        logoutBtn.addEventListener('click', logout);
+        mobileLogoutBtn.addEventListener('click', logout);
+
         // ============== 邮箱登录 ==============
         loginBtn.addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value.trim();
@@ -653,29 +892,34 @@
                 alert('Please fill in all fields');
                 return;
             }
-            alert('Login success! Redirect to download...');
-            closeAuthModal();
-            window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+            // 模拟登录成功
+            loginSuccess(email);
+            alert('Login success!');
         });
 
         // ============== 邮箱注册 ==============
         registerBtn.addEventListener('click', () => {
-            const name = document.getElementById('regName').value.trim();
             const email = document.getElementById('regEmail').value.trim();
             const pwd = document.getElementById('regPwd').value.trim();
-            if (!name || !email || !pwd) {
+            if (!email || !pwd) {
                 alert('Please fill in all fields');
                 return;
             }
-            alert('Account created! Please login.');
-            switchTab('login');
+            // 模拟注册成功并自动登录
+            loginSuccess(email);
+            alert('Account created and logged in successfully!');
         });
 
         // ============== Google 登录 ==============
         googleLoginBtn.addEventListener('click', () => {
-            alert('Redirecting to Google login...');
-            // window.location.href = "你的Google OAuth地址";
+            // 模拟Google登录成功
+            const mockEmail = 'user.google@gmail.com';
+            loginSuccess(mockEmail);
+            alert('Logged in with Google successfully!');
         });
+
+        // 页面加载时更新登录状态
+        window.addEventListener('load', updateLoginStatus);
     </script>
     
 	<script>
@@ -788,7 +1032,10 @@
     }
 
     // 页面加载完成后执行检测
-    window.onload = checkLanguageAndShowQR;
+    window.onload = function() {
+        checkLanguageAndShowQR();
+        updateLoginStatus(); // 确保登录状态在页面加载时更新
+    };
   </script>
 </body>
 </html>
