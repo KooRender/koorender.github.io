@@ -712,6 +712,59 @@
     </script>
     
     <script>
+		// 同域则为空；跨域需要填后端的完整地址
+        const API_BASE = 'https://sit.coohom.com'; // 按实际后端地址修改
+        
+        /**
+		 * 简易注册/登录 — 后端自动判断邮箱是否已注册
+		 * POST /api/account/authorization
+		 */
+		async function easyLoginRegister({ email, password, registerSource = 'koorender' }) {
+			const res = await fetch(`${API_BASE}/api/account/authorization/koorender`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include', // 携带 cookie
+				body: JSON.stringify({ email, password, registerSource }),
+			});
+			const data = await res.json();
+			if (res.status === 200) {
+			  if (data.d && data.d.newRegister) {
+				console.log('当前用户为新注册用户！')
+			  } else {
+				console.log('当前用户为老用户！')
+			  }
+			}
+
+			return normalizeResponse(data, res.status);
+		}
+
+		// ============================================================
+		//  Helpers
+		// ============================================================
+
+		/** 统一处理后端响应格式 */
+		function normalizeResponse(data, httpStatus) {
+			// 只要 HTTP 状态码 200 就认为登录成功
+			if (httpStatus !== 200) return { success: false, message: data.d || 'Error' };
+
+			return {
+				success: true,
+				isNewUser: !!data.d?.newRegister,
+				needVerify: data.c === 'VERIFY',
+				verifyType: data.d?.verifyType,
+				verifyCode: data.d?.verifyCode,
+				accessToken: data.d?.accessToken,
+				refreshToken: data.d?.refreshToken,
+			};
+		}
+
+		function showMsg(text, isError) {
+			const el = document.getElementById('msg');
+			el.style.display = 'block';
+			el.className = 'msg ' + (isError ? 'error' : 'success');
+			el.textContent = text;
+		}
+            
         // ====================== 新版登录弹窗逻辑 ======================
         const authModal = document.getElementById('authModal');
         const modalClose = document.getElementById('modalClose');
@@ -858,6 +911,11 @@
                 alert('Please fill in all fields');
                 return;
             }
+            
+            const result = await easyLoginRegister({ email, password });
+            
+            if (!result.success) return showMsg(result.message, true);
+            
             // 模拟注册成功并自动登录
             loginSuccess(email);
             alert('Account created and logged in successfully!');
