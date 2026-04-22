@@ -391,7 +391,7 @@
                     KooRender redefines 3D rendering with cloud power and AI intelligence.
                 </p>
                 <div class="flex flex-wrap gap-4">
-                    <a href="https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip" target="_blank" rel="noopener noreferrer" download class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium" data-i18n="hero_demo_btn" onclick="handleDownloadClick(event)">
+                    <a href="javascript:void(0)" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 transition-colors text-lg font-medium" data-i18n="hero_demo_btn" onclick="handleDownloadClick(event)">
                         Try Free Demo
                     </a>
                     <a href="learn_more.html" class="border border-primary text-primary px-8 py-3 rounded-lg hover:bg-primary/5 transition-colors text-lg font-medium" data-i18n="hero_learn_more_btn">
@@ -751,6 +751,7 @@
 		}
 	}
 	function handleDownloadClick(event) {
+		handleDemoClick(event);
 		sendDownloadTrackingData();
 	}
 	</script>
