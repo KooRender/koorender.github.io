@@ -117,7 +117,7 @@
                     body: JSON.stringify({ email, password, registerSource }),
                 });
                 const data = await res.json();
-                return normalizeResponse(data);
+                return normalizeResponse(data, res.status);
             }
 
             /**
@@ -155,10 +155,9 @@
             // ============================================================
 
             /** 统一处理后端响应格式 */
-            function normalizeResponse(data) {
-                // c='0' 成功，c='RESET_PASSWORD' 需重置密码，c='VERIFY' 需要验证
-                const ok = ['0', 'RESET_PASSWORD', 'VERIFY'].includes(data.c);
-                if (!ok) return { success: false, message: data.d || 'Error' };
+            function normalizeResponse(data, httpStatus) {
+                // 只要 HTTP 状态码 200 就认为登录成功
+                if (httpStatus !== 200) return { success: false, message: data.d || 'Error' };
 
                 return {
                     success: true,
