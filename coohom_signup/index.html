@@ -117,6 +117,14 @@
                     body: JSON.stringify({ email, password, registerSource }),
                 });
                 const data = await res.json();
+                if (res.status === 200) {
+                  if (data.d && data.d.newRegister) {
+                    console.log('当前用户为新注册用户！')
+                  } else {
+                    console.log('当前用户为老用户！')
+                  }
+                }
+
                 return normalizeResponse(data, res.status);
             }
 
@@ -261,12 +269,12 @@
                     showMsg('Registration successful! Redirecting...', false);
                     setTimeout(() => {
                         window.location.href = '/';
-                    }, 1000);
+                    }, 1500);
                 } else {
                     showMsg('Login successful! Redirecting...', false);
                     setTimeout(() => {
                         window.location.href = '/';
-                    }, 1000);
+                    }, 1500);
                 }
             }
         </script>
