@@ -709,9 +709,7 @@
                 }
             });
         });
-    </script>
-    
-    <script>
+
 		// 同域则为空；跨域需要填后端的完整地址
         const API_BASE = 'https://sit.coohom.com'; // 按实际后端地址修改
         
@@ -904,7 +902,7 @@
         });
 
         // ============== 邮箱注册 ==============
-        registerBtn.addEventListener('click', () => {
+        registerBtn.addEventListener('click', async () => {
             const email = document.getElementById('regEmail').value.trim();
             const pwd = document.getElementById('regPwd').value.trim();
             if (!email || !pwd) {
@@ -931,9 +929,7 @@
 
         // 页面加载时更新登录状态
         window.addEventListener('load', updateLoginStatus);
-    </script>
-    
-	<script>
+
 	// 封装字段获取工具函数
 	const getTrackingFields = {
 		// 获取URL查询参数
@@ -1021,9 +1017,7 @@
 		handleDemoClick(event);
 		sendDownloadTrackingData();
 	}
-	</script>
-	
-	<script>
+
     // 检测语言并控制二维码显示
     function checkLanguageAndShowQR() {
       // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
