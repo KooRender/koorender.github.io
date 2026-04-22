@@ -103,14 +103,14 @@
             // ============================================================
 
             // 同域则为空；跨域需要填后端的完整地址
-            const API_BASE = 'https://www.coohom.com'; // 按实际后端地址修改
+            const API_BASE = 'https://sit.coohom.com'; // 按实际后端地址修改
 
             /**
              * 简易注册/登录 — 后端自动判断邮箱是否已注册
              * POST /api/account/authorization
              */
-            async function easyLoginRegister({ email, password, registerSource = '' }) {
-                const res = await fetch(`${API_BASE}/api/account/authorization`, {
+            async function easyLoginRegister({ email, password, registerSource = 'koorender' }) {
+                const res = await fetch(`${API_BASE}/api/account/authorization/koorender`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include', // 携带 cookie
@@ -195,7 +195,7 @@
                     provider: 'GOOGLE',
                     redirectURL: window.location.origin,
                     type: 'WEBSITE',
-                    pageType: 'koorender',
+                    registerSource: 'koorender',
                 });
                 window.location.href = `${API_BASE}/api/account/social/login?${params}`;
             }
