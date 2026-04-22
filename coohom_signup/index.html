@@ -87,6 +87,178 @@
     .floating-qr:hover {
       transform: scale(1.05);
     }
+    
+    /* 新版登录/注册弹窗样式 */
+	.modal-overlay {
+		position: fixed;
+		top: 0; left: 0; right: 0; bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(6px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 99999;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.3s ease;
+	}
+	.modal-overlay.active {
+		opacity: 1;
+		visibility: visible;
+	}
+	.modal-container {
+		background: #fff;
+		border-radius: 16px;
+		box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+		width: 90%;
+		max-width: 460px;
+		padding: 28px 32px;
+		transform: translateY(20px);
+		transition: transform 0.3s ease;
+		position: relative;
+	}
+	.modal-overlay.active .modal-container {
+		transform: translateY(0);
+	}
+	.modal-close {
+		position: absolute;
+		top: 20px; right: 24px;
+		font-size: 20px;
+		color: #999;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+	.modal-close:hover {
+		color: #165DFF;
+	}
+	.auth-title {
+		font-size: 22px;
+		font-weight: 700;
+		color: #1D2B3A;
+		margin-bottom: 8px;
+		text-align: center;
+	}
+	.auth-desc {
+		text-align: center;
+		color: #666;
+		font-size: 14px;
+		margin-bottom: 24px;
+	}
+	.google-login-btn {
+		width: 100%;
+		padding: 12px;
+		border: 1px solid #ddd;
+		border-radius: 10px;
+		background: #fff;
+		font-size: 15px;
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		cursor: pointer;
+		transition: all 0.2s;
+		margin-bottom: 28px;
+	}
+	.google-login-btn:hover {
+		background: #f7f9ff;
+		border-color: #165DFF;
+	}
+	.google-login-btn img {
+		width: 18px; height: 18px;
+	}
+	.auth-divider {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		color: #999;
+		font-size: 13px;
+		margin: 20px 0;
+	}
+	.auth-divider::before,
+	.auth-divider::after {
+		content: "";
+		flex: 1;
+		height: 1px;
+		background: #eee;
+	}
+	.auth-tabs {
+		display: flex;
+		background: #f5f7fa;
+		border-radius: 10px;
+		padding: 4px;
+		margin-bottom: 20px;
+	}
+	.auth-tab {
+		flex: 1;
+		text-align: center;
+		padding: 10px 0;
+		border-radius: 8px;
+		font-weight: 600;
+		color: #666;
+		cursor: pointer;
+		transition: all 0.2s;
+	}
+	.auth-tab.active {
+		background: #fff;
+		color: #165DFF;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+	}
+	.auth-form {
+		display: none;
+	}
+	.auth-form.active {
+		display: block;
+	}
+	.form-input {
+		width: 100%;
+		padding: 14px 16px;
+		border: 1px solid #eee;
+		border-radius: 10px;
+		font-size: 15px;
+		margin-bottom: 16px;
+		transition: border-color 0.2s;
+	}
+	.form-input:focus {
+		outline: none;
+		border-color: #165DFF;
+		box-shadow: 0 0 0 3px rgba(22,93,255,0.1);
+	}
+	.form-btn {
+		width: 100%;
+		padding: 15px;
+		background: #165DFF;
+		color: #fff;
+		border: none;
+		border-radius: 10px;
+		font-size: 15px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.2s;
+		margin-top: 8px;
+	}
+	.form-btn:hover {
+		background: #0047cc;
+	}
+	.forgot-pwd {
+		text-align: right;
+		margin-bottom: 12px;
+	}
+	.form-link {
+		color: #165DFF;
+		text-decoration: none;
+		font-weight: 500;
+	}
+	.form-link:hover {
+		text-decoration: underline;
+	}
+	.agreement {
+		text-align: center;
+		font-size: 12px;
+		color: #999;
+		margin-top: 20px;
+		line-height: 1.4;
+	}
   </style>
     
     <script>
@@ -108,6 +280,51 @@
     <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
     <p class="qr-text">扫码加入用户群</p>
   </div>
+  
+  <!-- 新版登录/注册弹窗 -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-container">
+            <span class="modal-close" id="modalClose">✕</span>
+            <div class="auth-title">Welcome to KooRender</div>
+            <div class="auth-desc">Login or register to continue</div>
+
+            <!-- Google 登录 -->
+            <button class="google-login-btn" id="googleLoginBtn">
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991136.png" alt="Google">
+                Continue with Google
+            </button>
+
+            <div class="auth-divider">or use email</div>
+
+            <!-- 标签切换 -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Login</div>
+                <div class="auth-tab" data-tab="register">Register</div>
+            </div>
+
+            <!-- 登录表单 -->
+            <div class="auth-form active" id="loginForm">
+                <input type="email" class="form-input" placeholder="Email address" id="loginEmail">
+                <input type="password" class="form-input" placeholder="Password" id="loginPwd">
+                <div class="forgot-pwd">
+                    <a href="#" class="form-link">Forgot password?</a>
+                </div>
+                <button class="form-btn" id="loginBtn">Login</button>
+            </div>
+
+            <!-- 注册表单 -->
+            <div class="auth-form" id="registerForm">
+                <input type="text" class="form-input" placeholder="Full name" id="regName">
+                <input type="email" class="form-input" placeholder="Email address" id="regEmail">
+                <input type="password" class="form-input" placeholder="Password" id="regPwd">
+                <button class="form-btn" id="registerBtn">Create Account</button>
+            </div>
+
+            <div class="agreement">
+                By continuing, you agree to our <a href="#" class="form-link">Terms</a> and <a href="#" class="form-link">Privacy Policy</a>.
+            </div>
+        </div>
+    </div>
   
     <!-- Navigation Bar -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
@@ -359,6 +576,93 @@
                     }
                 }
             });
+        });
+    </script>
+    
+    <script>
+        // ====================== 新版登录弹窗逻辑 ======================
+        const authModal = document.getElementById('authModal');
+        const modalClose = document.getElementById('modalClose');
+        const loginTab = document.querySelector('[data-tab="login"]');
+        const registerTab = document.querySelector('[data-tab="register"]');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+
+        // 打开弹窗
+        function openAuthModal() {
+            authModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        // 关闭弹窗
+        function closeAuthModal() {
+            authModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        // 切换标签
+        function switchTab(tab) {
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+            }
+        }
+
+        // Try Free Demo 点击
+        function handleDemoClick(e) {
+            e.preventDefault();
+            openAuthModal();
+        }
+
+        // 关闭
+        modalClose.addEventListener('click', closeAuthModal);
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeAuthModal();
+        });
+
+        // 切换
+        loginTab.addEventListener('click', () => switchTab('login'));
+        registerTab.addEventListener('click', () => switchTab('register'));
+
+        // ============== 邮箱登录 ==============
+        loginBtn.addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pwd = document.getElementById('loginPwd').value.trim();
+            if (!email || !pwd) {
+                alert('Please fill in all fields');
+                return;
+            }
+            alert('Login success! Redirect to download...');
+            closeAuthModal();
+            window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+        });
+
+        // ============== 邮箱注册 ==============
+        registerBtn.addEventListener('click', () => {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pwd = document.getElementById('regPwd').value.trim();
+            if (!name || !email || !pwd) {
+                alert('Please fill in all fields');
+                return;
+            }
+            alert('Account created! Please login.');
+            switchTab('login');
+        });
+
+        // ============== Google 登录 ==============
+        googleLoginBtn.addEventListener('click', () => {
+            alert('Redirecting to Google login...');
+            // window.location.href = "你的Google OAuth地址";
         });
     </script>
     
