@@ -910,7 +910,7 @@
                 return;
             }
             
-            const result = await easyLoginRegister({ email, password });
+            const result = await easyLoginRegister({ email, pwd });
             
             if (!result.success) return showMsg(result.message, true);
             
