@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Register Demo</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                max-width: 400px;
+                margin: 80px auto;
+            }
+            .form-group {
+                margin-bottom: 16px;
+            }
+            label {
+                display: block;
+                margin-bottom: 4px;
+            }
+            input {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+            button {
+                width: 100%;
+                padding: 10px;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+            .msg {
+                margin-top: 12px;
+                padding: 8px;
+                display: none;
+            }
+            .error {
+                color: red;
+            }
+            .success {
+                color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Register</h2>
+
+        <!-- Google 注册 -->
+        <div id="google-signup">
+            <button
+                onclick="handleGoogleSignup()"
+                style="
+                    background: #4285f4;
+                    color: white;
+                    border: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                "
+            >
+                <svg width="18" height="18" viewBox="0 0 48 48">
+                    <path
+                        fill="#fff"
+                        d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                    />
+                </svg>
+                Sign up with Google
+            </button>
+        </div>
+
+        <div style="text-align: center; color: #999; margin: 16px 0">— or —</div>
+
+        <!-- Step 1: 邮箱注册表单 -->
+        <div id="step-register">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="your@email.com" />
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="At least 8 characters" />
+            </div>
+            <button onclick="handleRegister()">Register</button>
+        </div>
+
+        <!-- Step 2: 邮箱验证码 -->
+        <div id="step-verify" style="display: none">
+            <p>Verification code has been sent to <strong id="display-email"></strong></p>
+            <div class="form-group">
+                <label>Code</label>
+                <input type="text" id="captcha" placeholder="Enter 6-digit code" />
+            </div>
+            <button onclick="handleActivate()">Activate</button>
+            <button onclick="handleResend()" style="background: #eee; margin-top: 4px">
+                Resend Code
+            </button>
+        </div>
+
+        <div id="msg" class="msg"></div>
+
+        <script>
+            // ============================================================
+            //  Core API functions — 纯 fetch，无依赖
+            // ============================================================
+
+            // 同域则为空；跨域需要填后端的完整地址
+            const API_BASE = 'https://sit.coohom.com'; // 按实际后端地址修改
+
+            /**
+             * 简易注册/登录 — 后端自动判断邮箱是否已注册
+             * POST /api/account/authorization
+             */
+            async function easyLoginRegister({ email, password, registerSource = 'koorender' }) {
+                const res = await fetch(`${API_BASE}/api/account/authorization/koorender`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // 携带 cookie
+                    body: JSON.stringify({ email, password, registerSource }),
+                });
+                const data = await res.json();
+                if (res.status === 200) {
+                  if (data.d && data.d.newRegister) {
+                    console.log('当前用户为新注册用户！')
+                  } else {
+                    console.log('当前用户为老用户！')
+                  }
+                }
+
+                return normalizeResponse(data, res.status);
+            }
+
+            /**
+             * 邮箱验证码激活
+             * GET /api/account/register/active-by-captcha?email=xx&captcha=xx
+             */
+            async function activeByCaptcha(email, captcha) {
+                const res = await fetch(
+                    `${API_BASE}/api/account/register/active-by-captcha?email=${encodeURIComponent(
+                        email
+                    )}&captcha=${encodeURIComponent(captcha)}`,
+                    { credentials: 'include' }
+                );
+                const data = await res.json();
+                if (data.c === '0') return { success: true, data: data.d };
+                return { success: false, message: 'Verification failed' };
+            }
+
+            /**
+             * 重新发送验证码
+             * GET /api/account/email/captcha?email=xx&token=xx&defenseProvider=xx
+             * 注意：生产环境需要先获取防刷 token（turnstile/recaptcha），demo 中省略
+             */
+            async function resendCaptcha(email) {
+                const res = await fetch(
+                    `${API_BASE}/api/account/email/captcha?email=${encodeURIComponent(email)}`,
+                    { credentials: 'include' }
+                );
+                const data = await res.json();
+                return data.c === '0';
+            }
+
+            // ============================================================
+            //  Helpers
+            // ============================================================
+
+            /** 统一处理后端响应格式 */
+            function normalizeResponse(data, httpStatus) {
+                // 只要 HTTP 状态码 200 就认为登录成功
+                if (httpStatus !== 200) return { success: false, message: data.d || 'Error' };
+
+                return {
+                    success: true,
+                    isNewUser: !!data.d?.newRegister,
+                    needVerify: data.c === 'VERIFY',
+                    verifyType: data.d?.verifyType,
+                    verifyCode: data.d?.verifyCode,
+                    accessToken: data.d?.accessToken,
+                    refreshToken: data.d?.refreshToken,
+                };
+            }
+
+            function showMsg(text, isError) {
+                const el = document.getElementById('msg');
+                el.style.display = 'block';
+                el.className = 'msg ' + (isError ? 'error' : 'success');
+                el.textContent = text;
+            }
+
+            // ============================================================
+            //  UI Event Handlers
+            // ============================================================
+
+            // ============================================================
+            //  Google 注册
+            // ============================================================
+
+            /**
+             * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
+             * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
+             */
+            function handleGoogleSignup() {
+                const params = new URLSearchParams({
+                    provider: 'GOOGLE',
+                    redirectURL: window.location.origin,
+                    type: 'WEBSITE',
+                    registerSource: 'koorender',
+                });
+                window.location.href = `${API_BASE}/api/account/social/login?${params}`;
+            }
+
+            let currentEmail = '';
+
+            async function handleRegister() {
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!email || !password) return showMsg('Please fill in all fields', true);
+                if (password.length < 8)
+                    return showMsg('Password must be at least 8 characters', true);
+                    const result = await easyLoginRegister({ email, password });
+                    currentEmail = email;
+
+                    if (!result.success) return showMsg(result.message, true);
+
+                    onRegisterSuccess(result);
+
+                    // if (result.needVerify) {
+                    //     // 需要邮箱验证码 → 进入 Step 2
+                    //     document.getElementById('step-register').style.display = 'none';
+                    //     document.getElementById('step-verify').style.display = 'block';
+                    //     document.getElementById('display-email').textContent = email;
+                    //     showMsg('Verification code sent, please check your email.', false);
+                    // } else {
+                    //     // 直接成功 → 跳转
+                    //     onRegisterSuccess(result);
+                    // }
+            }
+
+            async function handleActivate() {
+                const captcha = document.getElementById('captcha').value.trim();
+                if (!captcha) return showMsg('Please enter the code', true);
+
+                try {
+                    const result = await activeByCaptcha(currentEmail, captcha);
+                    if (result.success) {
+                        showMsg('Registration complete!', false);
+                        // 激活成功后可跳转
+                        setTimeout(() => {
+                            window.location.href = '/thankyou'; // 改为实际跳转地址
+                        }, 1000);
+                    } else {
+                        showMsg(result.message, true);
+                    }
+                } catch (err) {
+                    showMsg('Network error: ' + err.message, true);
+                }
+            }
+
+            async function handleResend() {
+                try {
+                    await resendCaptcha(currentEmail);
+                    showMsg('Code resent, please check your email.', false);
+                } catch (err) {
+                    showMsg('Resend failed', true);
+                }
+            }
+
+            function onRegisterSuccess(result) {
+                if (result.isNewUser) {
+                    showMsg('Registration successful! Redirecting...', false);
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                } else {
+                    showMsg('Login successful! Redirecting...', false);
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                }
+            }
+        </script>
+    </body>
+</html>
