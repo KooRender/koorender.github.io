@@ -461,27 +461,7 @@
                         <button class="user-avatar-btn" id="userAvatarBtn">
                             <img src="" alt="User Avatar" class="user-avatar" id="userAvatarImg">
                             <span class="user-email" id="userEmailText"></span>
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
                         </button>
-                        <div class="user-dropdown-menu" id="userDropdownMenu">
-                            <div class="user-dropdown-item">
-                                <i class="fa-solid fa-user-circle"></i>
-                                <span>My Profile</span>
-                            </div>
-                            <div class="user-dropdown-item">
-                                <i class="fa-solid fa-cog"></i>
-                                <span>Settings</span>
-                            </div>
-                            <div class="user-dropdown-item">
-                                <i class="fa-solid fa-cloud-download"></i>
-                                <span>My Downloads</span>
-                            </div>
-                            <div class="user-dropdown-divider"></div>
-                            <div class="user-dropdown-item" id="logoutBtn">
-                                <i class="fa-solid fa-sign-out-alt"></i>
-                                <span>Logout</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -760,7 +740,6 @@
         const mobileUserInfo = document.getElementById('mobileUserInfo');
         const mobileUserAvatar = document.getElementById('mobileUserAvatar');
         const mobileUserEmail = document.getElementById('mobileUserEmail');
-        const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
 
         // 打开弹窗
         function openAuthModal() {
@@ -844,17 +823,6 @@
             closeAuthModal();
         }
 
-        // 退出登录
-        function logout() {
-            // 清除本地存储
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('userAvatar');
-            // 更新登录状态
-            updateLoginStatus();
-            // 提示退出成功
-            alert('Logout successful!');
-        }
-
         // 关闭
         modalClose.addEventListener('click', closeAuthModal);
         authModal.addEventListener('click', (e) => {
@@ -868,21 +836,6 @@
         // 头部登录按钮点击
         headerLoginBtn.addEventListener('click', openAuthModal);
         mobileLoginBtn.addEventListener('click', openAuthModal);
-
-        // 用户头像按钮点击（切换下拉菜单）
-        userAvatarBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userDropdownMenu.classList.toggle('active');
-        });
-
-        // 点击页面其他区域关闭下拉菜单
-        document.addEventListener('click', () => {
-            userDropdownMenu.classList.remove('active');
-        });
-
-        // 退出登录按钮点击
-        logoutBtn.addEventListener('click', logout);
-        mobileLogoutBtn.addEventListener('click', logout);
 
         // ============== 邮箱登录 ==============
         loginBtn.addEventListener('click', () => {
