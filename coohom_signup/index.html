@@ -208,26 +208,23 @@
                 if (!email || !password) return showMsg('Please fill in all fields', true);
                 if (password.length < 8)
                     return showMsg('Password must be at least 8 characters', true);
-
-                try {
                     const result = await easyLoginRegister({ email, password });
                     currentEmail = email;
 
                     if (!result.success) return showMsg(result.message, true);
 
-                    if (result.needVerify) {
-                        // 需要邮箱验证码 → 进入 Step 2
-                        document.getElementById('step-register').style.display = 'none';
-                        document.getElementById('step-verify').style.display = 'block';
-                        document.getElementById('display-email').textContent = email;
-                        showMsg('Verification code sent, please check your email.', false);
-                    } else {
-                        // 直接成功 → 跳转
-                        onRegisterSuccess(result);
-                    }
-                } catch (err) {
-                    showMsg('Network error: ' + err.message, true);
-                }
+                    onRegisterSuccess(result);
+
+                    // if (result.needVerify) {
+                    //     // 需要邮箱验证码 → 进入 Step 2
+                    //     document.getElementById('step-register').style.display = 'none';
+                    //     document.getElementById('step-verify').style.display = 'block';
+                    //     document.getElementById('display-email').textContent = email;
+                    //     showMsg('Verification code sent, please check your email.', false);
+                    // } else {
+                    //     // 直接成功 → 跳转
+                    //     onRegisterSuccess(result);
+                    // }
             }
 
             async function handleActivate() {
