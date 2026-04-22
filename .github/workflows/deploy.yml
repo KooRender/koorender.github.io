@@ -34,7 +34,6 @@ jobs:
           cp -R js/ site/
           cp CNAME site/
           cp docs_util/index.html site/docs/index.html
-          cp -R coohom_signup/ site/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
