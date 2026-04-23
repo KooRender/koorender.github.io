@@ -450,6 +450,22 @@
                     </div>
                 </div>
 
+                <!-- 登录/用户信息区域 -->
+                <div id="authSection">
+                    <!-- 未登录状态 - 登录按钮 -->
+                    <button class="login-btn" id="headerLoginBtn" data-i18n="nav_login">
+                        <i class="fa-solid fa-user mr-2"></i>Login
+                    </button>
+
+                    <!-- 已登录状态 - 用户信息（默认隐藏） -->
+                    <div class="user-menu-container hidden" id="userMenuContainer">
+                        <button class="user-avatar-btn" id="userAvatarBtn">
+                            <img src="" alt="User Avatar" class="user-avatar" id="userAvatarImg">
+                            <span class="user-email" id="userEmailText"></span>
+                        </button>
+                    </div>
+                </div>
+
                 <a href="#get-started" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_demo">Demo</a>
             </div>
             <!-- 移动端菜单按钮 -->
@@ -470,6 +486,23 @@
                     <div class="flex gap-4">
                         <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
                         <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <!-- 移动端登录/用户信息 -->
+                <div class="py-2" id="mobileAuthSection">
+                    <button class="login-btn w-full justify-center flex items-center" id="mobileLoginBtn" data-i18n="nav_login">
+                        <i class="fa-solid fa-user mr-2"></i>Login
+                    </button>
+
+                    <!-- 已登录状态 - 移动端（默认隐藏） -->
+                    <div class="hidden py-2" id="mobileUserInfo">
+                        <div class="flex items-center gap-3 p-3 bg-neutral rounded-lg mb-2">
+                            <img src="" alt="User Avatar" class="w-10 h-10 rounded-full" id="mobileUserAvatar">
+                            <div>
+                                <p class="font-medium" id="mobileUserEmail"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
