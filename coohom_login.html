@@ -723,15 +723,13 @@
 				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include', // 携带 cookie
 				body: JSON.stringify({ email, password, registerSource }),
-			});
+            });
+
+            if (res.status !== 200) {
+                return { success: false, message: 'Error' };
+            }
+
 			const data = await res.json();
-			if (res.status === 200) {
-			  if (data.d && data.d.newRegister) {
-				console.log('当前用户为新注册用户！')
-			  } else {
-				console.log('当前用户为老用户！')
-			  }
-			}
 
 			return normalizeResponse(data, res.status);
 		}
@@ -742,9 +740,6 @@
 
 		/** 统一处理后端响应格式 */
 		function normalizeResponse(data, httpStatus) {
-			// 只要 HTTP 状态码 200 就认为登录成功
-			if (httpStatus !== 200) return { success: false, message: data.d || 'Error' };
-
 			return {
 				success: true,
 				isNewUser: !!data.d?.newRegister,
@@ -847,8 +842,12 @@
                 "credentials": "include"
             });
 
+            if (res.status !== 200) {
+                return false;
+            }
+
             const data = await res.json();
-            if (res.status === 200 && data.d && data.d.email !== null) {
+            if (data.d && data.d.email !== null) {
                 refreshLoginUI(data.d.email, data.d.avatar);
                 return true;
             }
