@@ -817,6 +817,11 @@
             }
         }
 
+        function downloadSoftwarePackage() {
+            sendDownloadTrackingData();
+            window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+        }
+
         // Try Free Demo 点击
         function handleDemoClick(e) {
             e.preventDefault();
@@ -825,7 +830,7 @@
                 openAuthModal();
             } else {
                 // 已登录则直接跳转到下载
-                window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+                downloadSoftwarePackage();
             }
         }
 
@@ -844,7 +849,7 @@
 
             const data = await res.json();
             if (res.status === 200 && data.d && data.d.email !== null) {
-                refreshLoginUI(data.d.email);
+                refreshLoginUI(data.d.email, data.d.avatar);
                 return true;
             }
 
@@ -856,7 +861,7 @@
             if (checkLoginStatus()) {
                 // 已登录状态
                 const userEmail = localStorage.getItem('userEmail');
-                const userAvatar = localStorage.getItem('userAvatar') || `https://picsum.photos/200/200?random=${userEmail}`;
+                const userAvatar = localStorage.getItem('userAvatar');
                 
                 // 桌面端显示用户信息
                 headerLoginBtn.classList.add('hidden');
@@ -879,11 +884,11 @@
             }
         }
 
-        function refreshLoginUI(email) {
+        function refreshLoginUI(email, avatar) {
             // 存储用户信息到本地存储
             localStorage.setItem('userEmail', email);
             // 生成随机头像（实际项目中应该从登录接口获取）
-            localStorage.setItem('userAvatar', `https://picsum.photos/200/200?random=${email}`);
+            localStorage.setItem('userAvatar', avatar);
         }
 
         // 模拟登录成功
@@ -892,6 +897,8 @@
             updateLoginStatus();
             // 关闭弹窗
             closeAuthModal();
+            // 下载软件安装包
+            downloadSoftwarePackage();
         }
 
         // 关闭
@@ -913,8 +920,11 @@
             const email = document.getElementById('loginEmail').value.trim();
             const pwd = document.getElementById('loginPwd').value.trim();
             if (!email || !pwd) {
-                alert('Please fill in all fields');
-                return;
+                return showMsg('Please fill in all fields', true);
+            }
+
+            if (pwd.length < 8) {
+                return showMsg('Password must be at least 8 characters', true);
             }
 
             const result = await easyLoginRegister({ email, pwd });
@@ -923,7 +933,6 @@
 
             // 模拟登录成功
             loginSuccess();
-            alert('Login success!');
         });
 
         // ============== 邮箱注册 ==============
@@ -931,8 +940,11 @@
             const email = document.getElementById('regEmail').value.trim();
             const pwd = document.getElementById('regPwd').value.trim();
             if (!email || !pwd) {
-                alert('Please fill in all fields');
-                return;
+                return showMsg('Please fill in all fields', true);
+            }
+
+            if (pwd.length < 8) {
+                return showMsg('Password must be at least 8 characters', true);
             }
             
             const result = await easyLoginRegister({ email, pwd });
@@ -941,7 +953,6 @@
             
             // 模拟注册成功并自动登录
             loginSuccess();
-            alert('Account created and logged in successfully!');
         });
 
         // ============== Google 登录 ==============
@@ -952,7 +963,7 @@
              */
             const params = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: window.location.origin,
+                redirectURL: window.location.origin + '?clickEvent=true',
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
@@ -1044,7 +1055,6 @@
 	}
 	function handleDownloadClick(event) {
 		handleDemoClick(event);
-		sendDownloadTrackingData();
 	}
 
     // 检测语言并控制二维码显示
@@ -1069,6 +1079,15 @@
     window.onload = function() {
         checkLanguageAndShowQR();
         updateLoginStatus(); // 确保登录状态在页面加载时更新
+
+        const params = new URLSearchParams(window.location.search);
+
+        // 2. 检测是否有 ?clickEvent=true
+        const isClickEvent = params.get('clickEvent') === 'true';
+
+        if (isClickEvent) {
+            downloadSoftwarePackage();
+        }
     };
   </script>
 </body>
