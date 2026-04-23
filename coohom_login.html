@@ -834,9 +834,26 @@
             return localStorage.getItem('userEmail') !== null;
         }
 
+        async function checkLoginStatus() {
+            const res = await fetch("https://sit.coohom.com/api/account/detail/koorender", {
+                "headers": {},
+                "method": "GET",
+                "mode": "cors",
+                "credentials": "include"
+            });
+
+            const data = await res.json();
+            if (res.status === 200 && data.d && data.d.email !== null) {
+                loginSuccess(data.d.email);
+                return true;
+            }
+
+            return false;
+        }
+
         // 更新登录状态显示
         function updateLoginStatus() {
-            if (isUserLoggedIn()) {
+            if (checkLoginStatus()) {
                 // 已登录状态
                 const userEmail = localStorage.getItem('userEmail');
                 const userAvatar = localStorage.getItem('userAvatar') || `https://picsum.photos/200/200?random=${userEmail}`;
@@ -889,13 +906,18 @@
         mobileLoginBtn.addEventListener('click', openAuthModal);
 
         // ============== 邮箱登录 ==============
-        loginBtn.addEventListener('click', () => {
+        loginBtn.addEventListener('click', async () => {
             const email = document.getElementById('loginEmail').value.trim();
             const pwd = document.getElementById('loginPwd').value.trim();
             if (!email || !pwd) {
                 alert('Please fill in all fields');
                 return;
             }
+
+            const result = await easyLoginRegister({ email, pwd });
+
+            if (!result.success) return showMsg(result.message, true);
+
             // 模拟登录成功
             loginSuccess(email);
             alert('Login success!');
@@ -921,10 +943,17 @@
 
         // ============== Google 登录 ==============
         googleLoginBtn.addEventListener('click', () => {
-            // 模拟Google登录成功
-            const mockEmail = 'user.google@gmail.com';
-            loginSuccess(mockEmail);
-            alert('Logged in with Google successfully!');
+            /**
+             * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
+             * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
+             */
+            const params = new URLSearchParams({
+                provider: 'GOOGLE',
+                redirectURL: window.location.origin,
+                type: 'WEBSITE',
+                registerSource: 'koorender',
+            });
+            window.location.href = `${API_BASE}/api/account/social/login?${params}`;
         });
 
         // 页面加载时更新登录状态
