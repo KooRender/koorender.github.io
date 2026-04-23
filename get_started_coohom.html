@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 缓存控制标签（对浏览器缓存有一定作用） -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title data-i18n="nav_get_started">Get Started - KooRender</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- i18n support -->
+    <script src="js/i18n.js?v=20260320.1"></script>
+    
+    <!-- 沿用原品牌样式配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0A2463',
+                        accent: '#3E92CC',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2B3A'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .step-card {
+                transition: all 0.2s ease;
+            }
+            .step-card:hover {
+                border-color: #165DFF;
+                box-shadow: 0 8px 16px rgba(22, 93, 255, 0.1);
+            }
+        }
+    </style>
+    
+    <style>
+    /* 悬浮容器：固定在右下角 */
+    .floating-qr {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 9999;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      text-align: center; /* 让文字和图片居中 */
+    }
+
+    /* 二维码图片 */
+    .floating-qr img {
+      width: 160px;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* 图片居中（兜底） */
+    }
+
+    /* 下方文字样式 */
+    .qr-text {
+      margin: 8px 0 0; /* 文字和二维码间距 */
+      font-size: 14px; /* 字号 */
+      color: #333;     /* 文字颜色 */
+      line-height: 1.2;/* 行高，避免文字重叠 */
+    }
+
+    /* 可选：悬停轻微放大，增加交互感 */
+    .floating-qr {
+      transition: transform 0.2s ease;
+    }
+    .floating-qr:hover {
+      transform: scale(1.05);
+    }
+  </style>
+  
+  <script>
+    (function() {
+		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
+		if (window.location.hostname.includes('koorender.com')) {
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-K936WG5');
+		}
+	})();
+  </script>
+</head>
+<body class="font-sans text-dark bg-white">
+	<!-- 悬浮二维码（带文字） -->
+  <div class="floating-qr" id="qrContainer">
+    <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
+    <p class="qr-text">扫码加入用户群</p>
+  </div>
+  
+    <!-- 导航栏（与原页面一致） -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="/" class="block">
+				<img src="https://qhstaticssl.kujiale.com/image/png/1773645150581/BA3B65894F8E28BA0943CD08F6EC9DC3.png" 
+					 alt="KooRender" 
+					 class="h-8 w-auto">
+			</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Dropdown -->
+                <div class="relative inline-block text-left">
+                    <button onclick="toggleLangDropdown(event)" class="flex items-center gap-1 text-dark/80 hover:text-primary transition-colors font-medium border border-dark/20 px-3 py-1 rounded-md text-sm">
+                        <span class="lang-current-text">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div class="lang-dropdown-menu hidden absolute right-0 mt-2 w-28 bg-white border border-gray-100 rounded-lg shadow-xl py-2 z-[60]">
+                        <button onclick="setLanguage('en')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">English</button>
+                        <button onclick="setLanguage('zh')" class="w-full text-left px-4 py-2 text-sm hover:bg-primary/5 hover:text-primary transition-colors">中文</button>
+                    </div>
+                </div>
+
+                <a href="#get-started" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="nav_demo">Demo</a>
+            </div>
+            <!-- 移动端菜单按钮 -->
+            <button class="md:hidden text-dark text-xl" id="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col gap-4">
+                <a href="features.html" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_features">Features</a>
+                <a href="https://manycoretech.com/about?active=1" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_about">About</a>
+                <a href="mailto:koorender@qunhemail.com" class="text-dark/80 hover:text-primary transition-colors py-2" data-i18n="nav_contact">Contact</a>
+                
+                <!-- Language Choice (Mobile) -->
+                <div class="flex flex-col gap-2 py-2">
+                    <p class="text-dark/40 text-xs font-bold uppercase tracking-wider" data-i18n="footer_support">Language</p>
+                    <div class="flex gap-4">
+                        <button onclick="setLanguage('en')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">English</button>
+                        <button onclick="setLanguage('zh')" class="text-dark/80 hover:text-primary transition-colors font-medium text-sm">中文</button>
+                    </div>
+                </div>
+
+                <a href="#get-started" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors text-center" data-i18n="nav_demo">Demo</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="pt-32 pb-16 bg-gradient-to-b from-neutral to-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-[clamp(2rem,4vw,3.5rem)] font-bold mb-6 text-shadow" data-i18n="get_started_title">
+                Get Started with <span class="text-primary">KooRender</span>
+            </h1>
+            <p class="text-lg text-dark/70 max-w-3xl mx-auto mb-8" data-i18n="get_started_desc">
+                Follow these simple steps to start using our cloud-based real-time renderer. 
+                <span class="text-primary font-medium">Limited-time free trial available now!</span>
+            </p>
+            <!-- 限时免费标签 -->
+            <div class="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <i class="fa-solid fa-clock mr-2"></i> <span data-i18n="limited_time_free_access">Limited-time Free Access</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心步骤区域 -->
+    <section id="get-started" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+        
+			<!-- 第一步：下载安装 -->
+            <div class="mb-16">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">1</div>
+                    <h2 class="text-2xl font-bold" data-i18n="step_1_title">Download & Install KooRender</h2>
+                </div>
+                
+                <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
+                    <p class="text-dark/70 mb-6 max-w-3xl" data-i18n="step_1_desc">
+                        Download the latest KooRender software package and complete the installation following the wizard. 
+                        Make sure your system meets the minimum requirements (Windows 10+, 3ds Max 2021-2026, V-Ray 4-7).
+                    </p>
+                    <a href="https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip" target="_blank" rel="noopener noreferrer" download class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" onclick="handleDownloadClick(event)">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="download_package_btn">Download KooRender Package</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 第二步：注册账号（分地区） -->
+            <div class="mb-16">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">2</div>
+                    <h2 class="text-2xl font-bold" data-i18n="step_2_title">Create an Account</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- 海外用户 -->
+                    <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-globe text-primary text-2xl"></i>
+                            <h3 class="text-xl font-bold" data-i18n="overseas_users_title">For Overseas Users</h3>
+                        </div>
+                        <p class="text-dark/70 mb-6" data-i18n="overseas_users_desc">Register an account on Coohom platform to access KooRender services</p>
+                        <a href="https://www.coohom.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="register_coohom_btn">
+                            <i class="fa-solid fa-arrow-right"></i>
+                            Register on Coohom
+                        </a>
+                    </div>
+                    
+                    <!-- 中国用户 -->
+                    <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-flag text-primary text-2xl"></i>
+                            <h3 class="text-xl font-bold" data-i18n="chinese_users_title">For Chinese Users</h3>
+                        </div>
+                        <p class="text-dark/70 mb-6" data-i18n="chinese_users_desc">Register an account on Kujiale platform to access KooRender services</p>
+                        <a href="https://www.kujiale.com" target="_blank" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="register_kujiale_btn">
+                            <i class="fa-solid fa-arrow-right"></i>
+                            Register on Kujiale
+                        </a>
+                    </div>
+                </div>
+                
+                <p class="text-dark/60 mt-4 text-sm" data-i18n="already_have_account">Already have an account? Skip to step 2 and use your existing Coohom/Kujiale account to log in.</p>
+            </div>
+
+            <!-- 第三步：启动使用 -->
+            <div class="mb-16">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold">3</div>
+                    <h2 class="text-2xl font-bold" data-i18n="step_3_title">Launch & Start Rendering</h2>
+                </div>
+                
+                <div class="step-card border border-gray-200 rounded-xl p-8 bg-white">
+					<!-- 新增视频/动图区域 -->
+                    <div class="mb-8">
+						<div class="rounded-xl overflow-hidden shadow-lg bg-neutral flex items-center justify-center">  <!-- 关键：flex + 居中 -->
+							<img src="https://qhstaticssl.kujiale.com/image/gif/1773389492637/B465189EB9FBA85C91A19F3631212307.gif" 
+								 alt="KooRender usage demo" 
+								 class="max-w-full max-h-full object-contain">  <!-- 限制最大尺寸 -->
+						</div>
+						<p class="text-center text-dark/60 mt-3 text-sm">KooRender</p>
+					</div>
+                    
+                    <ol class="list-decimal list-inside space-y-4 text-dark/70 mb-8 pl-4">
+                        <li data-i18n="step_3_step_1">Launch your 3ds Max software</li>
+                        <li data-i18n="step_3_step_2">Find and open the KooRender plugin from the 3ds Max plugin menu</li>
+                        <li data-i18n="step_3_step_3">Log in with your Coohom/Kujiale account credentials</li>
+                        <li data-i18n="step_3_step_4">Start using real-time rendering and offline rendering features for free</li>
+                    </ol>
+                    
+                    <!-- 限时免费提示 -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-yellow-800" data-i18n="limited_time_free_trial_title">Limited-time Free Trial</h4>
+                                <p class="text-yellow-700 text-sm" data-i18n="limited_time_free_trial_desc">
+                                    Currently, all KooRender features (real-time rendering & offline rendering) are available for free during the trial period. 
+                                    Enjoy high-quality cloud rendering without any cost!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 帮助支持 -->
+            <div class="text-center mt-12">
+                <h3 class="text-xl font-bold mb-4" data-i18n="need_help_title">Need Help?</h3>
+                <p class="text-dark/70 mb-6 max-w-2xl mx-auto" data-i18n="need_help_desc">
+                    If you encounter any issues during the setup process, check our documentation or contact our support team.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="docs/" class="border border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary/5 transition-colors" data-i18n="view_documentation_btn">
+                        <i class="fa-solid fa-book mr-2"></i> View Documentation
+                    </a>
+                    <a href="mailto:koorender@qunhemail.com" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors" data-i18n="contact_support_btn">
+                        <i class="fa-solid fa-headset mr-2"></i> Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚（与原页面一致） -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="/" class="block">
+						<img src="https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png" 
+							 alt="KooRender" 
+							 class="h-8 w-auto">
+					</a>
+                    <p class="text-white/70 mb-4" data-i18n="hero_tagline">Cloud-based Real-time Renderer</p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/manycoretech/koorender-max" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-github text-xl"></i></a>
+                        <a href="https://www.linkedin.com/company/kujiale" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
+                        <a href="https://x.com/coohom" class="text-white/70 hover:text-white transition-colors"><i class="fa-brands fa-twitter text-xl"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_product">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="features.html" class="text-white/70 hover:text-white transition-colors" data-i18n="nav_features">Features</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_pricing">Pricing</a></li>
+                        <li><a href="docs/" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_documentation">Documentation</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_api">API</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_company">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://manycoretech.com/about?active=1" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_about_us">About Us</a></li>
+                        <li><a href="https://manycoretech.com/about?active=2" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_careers">Careers</a></li>
+                        <li><a href="https://github.com/KooRender/koorender.github.io/discussions" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_discussions">Discussions</a></li>
+                        <li><a href="https://manycoretech.com/news-center" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_press">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4" data-i18n="footer_support">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.coohom.com/helpcenter" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_help_center">Help Center</a></li>
+                        <li><a href="mailto:koorender@qunhemail.com" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_contact_us">Contact Us</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/user-agreement" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_terms_of_service">Terms of Service</a></li>
+                        <li><a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" class="text-white/70 hover:text-white transition-colors" data-i18n="footer_privacy_policy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-sm" data-i18n="footer_copyright">
+                © 2026 KooRender. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript（与原页面一致） -->
+    <script>
+        // 移动端菜单切换
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+                    }
+                }
+            });
+        });
+    </script>
+    
+    <script>
+    // 封装字段获取工具函数
+	const getTrackingFields = {
+		// 获取URL查询参数
+		getUrlParam: function(paramName) {
+			if (!paramName) return 'unknown';
+			const searchParams = new URLSearchParams(window.location.search);
+			return searchParams.get(paramName)?.trim() || 'unknown';
+		},
+		// 获取语言（lang）
+		getLang: function() {
+			// 优先级：URL参数 > 浏览器语言 > 默认值
+			const urlLang = this.getUrlParam('lang');
+			if (urlLang !== 'unknown') return urlLang.toLowerCase();
+			
+			const browserLang = navigator.language || navigator.userLanguage || 'en-US';
+			return browserLang.toLowerCase();
+		},
+		// 获取地区（region）
+		getRegion: function() {
+			// 优先级：URL参数 > 从语言推导 > 默认值
+			const urlRegion = this.getUrlParam('region');
+			if (urlRegion !== 'unknown') return urlRegion.toUpperCase();
+			
+			// 从语言推导（如zh-CN → CN）
+			const lang = this.getLang();
+			const langRegion = lang.split('-')[1] || 'US';
+			return langRegion.toUpperCase();
+		},
+		// 获取所有追踪字段
+		getAllFields: function() {
+			return {
+				lang: this.getLang(),
+				region: this.getRegion(),
+				utmSource: this.getUrlParam('utm_source'),
+				utmMedium: this.getUrlParam('utm_medium'),
+				utmCampaign: this.getUrlParam('utm_campaign')
+			};
+		}
+	};
+	
+	async function sendDownloadTrackingData() {
+		// 动态获取所有字段并赋值
+		const properties = getTrackingFields.getAllFields();
+		
+		// 上报埋点
+		const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_download/log";
+
+		try {
+			const res = await fetch(url, {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(properties)
+			});
+		} catch (err) {
+			// 捕获请求异常，避免页面报错
+			console.error("Report failed: ", err);
+		}
+	}
+	function handleDownloadClick(event) {
+		sendDownloadTrackingData();
+	}
+	</script>
+	
+	<script>
+    // 检测语言并控制二维码显示
+    function checkLanguageAndShowQR() {
+      // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
+      const pageLang = document.documentElement.lang || '';
+      const browserLang = navigator.language || navigator.userLanguage || '';
+      
+      // 2. 判断是否为中文（包含简体zh-CN、繁体zh-TW/zh-HK等）
+      const isChinese = pageLang.startsWith('zh') || browserLang.startsWith('zh');
+      
+      // 3. 显示/隐藏二维码
+      const qrContainer = document.getElementById('qrContainer');
+      if (isChinese) {
+        qrContainer.style.display = 'block'; // 中文环境显示
+      } else {
+        qrContainer.style.display = 'none';  // 非中文环境隐藏
+      }
+    }
+
+    // 页面加载完成后执行检测
+    window.onload = checkLanguageAndShowQR;
+  </script>
+</body>
+</html>
