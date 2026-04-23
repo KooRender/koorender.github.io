@@ -930,7 +930,7 @@
                 return showMsg('Password must be at least 8 characters', true);
             }
 
-            const result = await easyLoginRegister({ email, pwd });
+            const result = await easyLoginRegister({ email, password: pwd });
 
             if (!result.success) return showMsg(result.message, true);
 
@@ -950,7 +950,7 @@
                 return showMsg('Password must be at least 8 characters', true);
             }
             
-            const result = await easyLoginRegister({ email, pwd });
+            const result = await easyLoginRegister({ email, password: pwd });
             
             if (!result.success) return showMsg(result.message, true);
             
