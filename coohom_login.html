@@ -856,8 +856,9 @@
         }
 
         // 更新登录状态显示
-        function updateLoginStatus() {
-            if (checkLoginStatus()) {
+        async function updateLoginStatus() {
+            const loginStatus = await checkLoginStatus();
+            if (loginStatus) {
                 // 已登录状态
                 const userEmail = localStorage.getItem('userEmail');
                 const userAvatar = localStorage.getItem('userAvatar');
