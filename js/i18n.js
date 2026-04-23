@@ -405,6 +405,14 @@ function updatePage() {
         }
     });
 
+    const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+    placeholderElements.forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[currentLang] && translations[currentLang][key]) {
+            el.placeholder = translations[currentLang][key];
+        }
+    });
+
     // 更新 html 标签的 lang 属性
     document.documentElement.lang = currentLang;
 
