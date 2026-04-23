@@ -367,8 +367,8 @@
     <div class="modal-overlay" id="authModal">
         <div class="modal-container">
             <span class="modal-close" id="modalClose">✕</span>
-            <div class="auth-title">Welcome to KooRender</div>
-            <div class="auth-desc">Login or register to continue</div>
+            <div class="auth-title" data-i18n="pop_title">Welcome to KooRender</div>
+            <div class="auth-desc" data-i18n="pop_desc">Login or register to continue</div>
 
             <!-- Google 登录 -->
             <button class="google-login-btn" id="googleLoginBtn" style="
@@ -379,7 +379,7 @@
                     align-items: center;
                     justify-content: center;
                     gap: 8px;
-                ">
+                " data-i18n="pop_continue_google">
                 <svg width="18" height="18" viewBox="0 0 48 48">
                     <path
                         fill="#fff"
@@ -389,30 +389,33 @@
                 Continue with Google
             </button>
 
-            <div class="auth-divider">or use email</div>
+            <div class="auth-divider" data-i18n="pop_use_email">or use email</div>
 
             <!-- 标签切换 -->
             <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Login</div>
-                <div class="auth-tab" data-tab="register">Register</div>
+                <div class="auth-tab active" data-tab="login" data-i18n="nav_login">Login</div>
+                <div class="auth-tab" data-tab="register" data-i18n="pop_register">Register</div>
             </div>
 
             <!-- 登录表单 -->
             <div class="auth-form active" id="loginForm">
-                <input type="email" class="form-input" placeholder="Email address" id="loginEmail">
-                <input type="password" class="form-input" placeholder="Password" id="loginPwd">
-                <button class="form-btn" id="loginBtn">Login</button>
+                <input type="email" class="form-input" placeholder="Email address" id="loginEmail" data-i18n-placeholder="pop_email_address">
+                <input type="password" class="form-input" placeholder="Password" id="loginPwd" data-i18n-placeholder="pop_password">
+                <button class="form-btn" id="loginBtn" data-i18n="nav_login">Login</button>
             </div>
 
             <!-- 注册表单 -->
             <div class="auth-form" id="registerForm">
-                <input type="email" class="form-input" placeholder="Email address" id="regEmail">
-                <input type="password" class="form-input" placeholder="Password" id="regPwd">
-                <button class="form-btn" id="registerBtn">Create Account</button>
+                <input type="email" class="form-input" placeholder="Email address" id="regEmail" data-i18n-placeholder="pop_email_address">
+                <input type="password" class="form-input" placeholder="Password" id="regPwd" data-i18n-placeholder="pop_password">
+                <button class="form-btn" id="registerBtn" data-i18n="pop_create_account">Create Account</button>
             </div>
 
             <div class="agreement">
-                By continuing, you agree to our <a href="https://www.coohom.com/pub/market/portal/c/user-agreement" class="form-link">Terms</a> and <a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" class="form-link">Privacy Policy</a>.
+                <span data-i18n="agree_prefix">By continuing, you agree to our</span>
+                <a href="https://www.coohom.com/pub/market/portal/c/user-agreement" class="form-link" data-i18n="agree_terms">Terms</a>
+                <span data-i18n="agree_and">and</span>
+                <a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" class="form-link" data-i18n="footer_privacy_policy">Privacy Policy</a>.
             </div>
         </div>
     </div>
