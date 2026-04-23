@@ -818,7 +818,10 @@
         }
 
         // Try Free Demo 点击
+        var downloadButtonClicked = false;
+
         function handleDemoClick(e) {
+            downloadButtonClicked = true;
             e.preventDefault();
             // 检查登录状态，如果未登录则打开登录弹窗
             if (!isUserLoggedIn()) {
@@ -963,7 +966,7 @@
              */
             const params = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: window.location.href + '?clickEvent=true',
+                redirectURL: window.location.href + '?clickEvent=' + String(downloadButtonClicked),
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
