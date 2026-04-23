@@ -844,7 +844,7 @@
 
             const data = await res.json();
             if (res.status === 200 && data.d && data.d.email !== null) {
-                loginSuccess(data.d.email);
+                refreshLoginUI(data.d.email);
                 return true;
             }
 
@@ -879,12 +879,15 @@
             }
         }
 
-        // 模拟登录成功
-        function loginSuccess(email) {
+        function refreshLoginUI(email) {
             // 存储用户信息到本地存储
             localStorage.setItem('userEmail', email);
             // 生成随机头像（实际项目中应该从登录接口获取）
             localStorage.setItem('userAvatar', `https://picsum.photos/200/200?random=${email}`);
+        }
+
+        // 模拟登录成功
+        function loginSuccess() {
             // 更新登录状态
             updateLoginStatus();
             // 关闭弹窗
@@ -919,7 +922,7 @@
             if (!result.success) return showMsg(result.message, true);
 
             // 模拟登录成功
-            loginSuccess(email);
+            loginSuccess();
             alert('Login success!');
         });
 
@@ -937,7 +940,7 @@
             if (!result.success) return showMsg(result.message, true);
             
             // 模拟注册成功并自动登录
-            loginSuccess(email);
+            loginSuccess();
             alert('Account created and logged in successfully!');
         });
 
@@ -955,9 +958,6 @@
             });
             window.location.href = `${API_BASE}/api/account/social/login?${params}`;
         });
-
-        // 页面加载时更新登录状态
-        window.addEventListener('load', updateLoginStatus);
 
 	// 封装字段获取工具函数
 	const getTrackingFields = {
