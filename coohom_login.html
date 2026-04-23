@@ -890,13 +890,15 @@
         }
 
         // 模拟登录成功
-        function loginSuccess() {
+        async function loginSuccess() {
             // 更新登录状态
-            updateLoginStatus();
+            await updateLoginStatus();
             // 关闭弹窗
             closeAuthModal();
             // 下载软件安装包
-            downloadSoftwarePackage();
+            if (isUserLoggedIn()) {
+                downloadSoftwarePackage();
+            }
         }
 
         // 关闭
@@ -1074,16 +1076,16 @@
     }
 
     // 页面加载完成后执行检测
-    window.onload = function() {
+    window.onload = async function() {
         checkLanguageAndShowQR();
-        updateLoginStatus(); // 确保登录状态在页面加载时更新
+        await updateLoginStatus(); // 确保登录状态在页面加载时更新
 
         const params = new URLSearchParams(window.location.search);
 
         // 2. 检测是否有 ?clickEvent=true
         const isClickEvent = params.get('clickEvent') === 'true';
 
-        if (isClickEvent) {
+        if (isClickEvent && isUserLoggedIn()) {
             downloadSoftwarePackage();
         }
     };
