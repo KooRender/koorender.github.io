@@ -833,7 +833,7 @@
         }
 
         async function checkLoginStatus() {
-            const res = await fetch("https://sit.coohom.com/api/account/detail/koorender", {
+            const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
                 "headers": {},
                 "method": "GET",
                 "mode": "cors",
