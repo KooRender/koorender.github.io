@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- i18n support -->
     <script src="js/i18n.js?v=20260320.1"></script>
-    
+    <script src="js/download-package.js?v=20260508.1"></script>
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -809,15 +810,19 @@
 
         function downloadSoftwarePackage() {
             sendDownloadTrackingData();
-            window.location.href = "https://cooverse-cos.kujiale.com/plugin/3dmax/3.1.6.exe";
+            window.location.href = getDownloadPackageUrl();
         }
 
         // Try Free Demo 点击
         var downloadButtonClicked = false;
+        /** 最近一次触发下载流程的按钮文案（供 GTM file_download 的 link_text） */
+        var lastFileDownloadLinkText = '';
 
         function handleDemoClick(e) {
             downloadButtonClicked = true;
             e.preventDefault();
+            const btn = e.currentTarget;
+            lastFileDownloadLinkText = (btn.innerText || btn.textContent || '').replace(/\s+/g, ' ').trim();
             // 检查登录状态，如果未登录则打开登录弹窗
             if (!isUserLoggedIn()) {
                 openAuthModal();
@@ -1038,6 +1043,17 @@
 	sendTrackingData();
 	
 	async function sendDownloadTrackingData() {
+		// GTM Data Layer：文件下载转化（见 cf 对接文档 file_download）
+		window.dataLayer = window.dataLayer || [];
+		const { file_name, file_extension } = parseDownloadUrlForTracking(getDownloadPackageUrl());
+		const linkTextFallback = (document.querySelector('[data-i18n="hero_demo_btn"], [data-i18n="download_package_btn"]')?.textContent || '').replace(/\s+/g, ' ').trim();
+		window.dataLayer.push({
+			event: 'file_download',
+			file_extension,
+			file_name,
+			link_text: lastFileDownloadLinkText || linkTextFallback || 'file_download'
+		});
+
 		// 动态获取所有字段并赋值
 		const properties = getTrackingFields.getAllFields();
 		
