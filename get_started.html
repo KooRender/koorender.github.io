@@ -377,7 +377,7 @@
             <div class="auth-desc" data-i18n="pop_desc">Login or register to continue</div>
 
             <!-- Google 登录 -->
-            <button class="google-login-btn" id="googleLoginBtn" style="
+            <button type="button" class="google-login-btn" id="googleLoginBtn" style="
               background: #4285f4;
               color: white;
               border: none;
@@ -956,18 +956,31 @@
         });
 
         // ============== Google 登录 ==============
-        googleLoginBtn.addEventListener('click', () => {
+        googleLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             /**
              * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
              * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
+             * redirectURL 须合法：若当前页已有 query，不能再用「+ ?clickEvent=」拼接（会出现第二个 ?）
              */
+            let redirectURL;
+            try {
+                const u = new URL(window.location.href);
+                u.searchParams.set('clickEvent', String(downloadButtonClicked));
+                redirectURL = u.toString();
+            } catch (err) {
+                const base = window.location.href;
+                const sep = base.indexOf('?') === -1 ? '?' : '&';
+                redirectURL = base + sep + 'clickEvent=' + encodeURIComponent(String(downloadButtonClicked));
+            }
             const params = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: window.location.href + '?clickEvent=' + String(downloadButtonClicked),
+                redirectURL,
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
-            window.location.href = `${API_BASE}/api/account/social/login?${params}`;
+            window.location.assign(`${API_BASE}/api/account/social/login?${params}`);
         });
 
         // 封装字段获取工具函数
