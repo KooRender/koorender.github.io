@@ -955,10 +955,13 @@
             /**
              * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
              * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
+             * redirectURL 必须用 & 追加参数：若页面已有 query（验证回调等），沿用 ? 会破坏 verifyEmail 等字段，后端校验失败则可能无法跳到 Google。
              */
+            const redirectTarget = new URL(window.location.href);
+            redirectTarget.searchParams.set('clickEvent', String(downloadButtonClicked));
             const params = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: window.location.href + '?clickEvent=' + String(downloadButtonClicked),
+                redirectURL: redirectTarget.toString(),
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
