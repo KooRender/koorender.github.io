@@ -887,11 +887,35 @@
             }
         }
 
-        function refreshLoginUI(email, avatar) {
+		function refreshLoginUI(email, avatar) {
             // 存储用户信息到本地存储
             localStorage.setItem('userEmail', email);
             // 生成随机头像（实际项目中应该从登录接口获取）
             localStorage.setItem('userAvatar', avatar);
+        }
+
+        /** GTM Data Layer：注册转化 sign_up（见 cf 81452872210）*/
+        function pushSignUpToDataLayer(method) {
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                event: 'sign_up',
+                method: method
+            });
+        }
+
+        /**
+         * OAuth 回流：若后端在 redirectURL 上追加 newRegister / firstRegister，则在此处触发 google 渠道的 sign_up。
+         * 去重后剔除参数，避免刷新重复上报。
+         */
+        function tryTrackGoogleOAuthSignUp() {
+            const url = new URL(window.location.href);
+            const nr = url.searchParams.get('newRegister') || url.searchParams.get('firstRegister');
+            if (nr !== 'true' && nr !== '1') return;
+            if (!localStorage.getItem('userEmail')) return;
+            pushSignUpToDataLayer('google');
+            url.searchParams.delete('newRegister');
+            url.searchParams.delete('firstRegister');
+            window.history.replaceState({}, '', url.pathname + url.search + url.hash);
         }
 
         // 模拟登录成功
@@ -936,6 +960,9 @@
 
             if (!result.success) return showMsg(result.message, true);
 
+            // 服务端判定为新注册用户且已进入登录态（非待邮箱验证码）时上报
+            if (result.isNewUser && !result.needVerify) pushSignUpToDataLayer('email');
+
             // 模拟登录成功
             loginSuccess();
         });
@@ -955,6 +982,9 @@
             const result = await easyLoginRegister({ email, password: pwd });
             
             if (!result.success) return showMsg(result.message, true);
+
+            // 验证码流程应在验证码校验成功后上报；此处仅覆盖已直接下发会话的新注册（见 cf 81452872210）
+            if (result.isNewUser && !result.needVerify) pushSignUpToDataLayer('email');
             
             // 模拟注册成功并自动登录
             loginSuccess();
@@ -1099,6 +1129,7 @@
     window.onload = async function() {
         checkLanguageAndShowQR();
         await updateLoginStatus(); // 确保登录状态在页面加载时更新
+        tryTrackGoogleOAuthSignUp();
 
         const params = new URLSearchParams(window.location.search);
 
