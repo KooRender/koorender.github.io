@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- i18n support -->
     <script src="js/i18n.js?v=20260320.1"></script>
-    <script src="js/gtm-data-layer.js?v=20260508"></script>
     
     <!-- Custom Tailwind Configuration -->
     <script>
@@ -808,28 +807,23 @@
             }
         }
 
-        const PLUGIN_DOWNLOAD_URL = 'https://cooverse-cos.kujiale.com/plugin/3dmax/3.1.6.exe';
-
-        async function downloadSoftwarePackage(linkEl) {
-            if (typeof pushDataLayerFileDownload === 'function') {
-                pushDataLayerFileDownload(linkEl || null, PLUGIN_DOWNLOAD_URL);
-            }
-            await sendDownloadTrackingData();
-            window.location.href = PLUGIN_DOWNLOAD_URL;
+        function downloadSoftwarePackage() {
+            sendDownloadTrackingData();
+            window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
         }
 
         // Try Free Demo 点击
         var downloadButtonClicked = false;
 
-        async function handleDemoClick(e) {
+        function handleDemoClick(e) {
             downloadButtonClicked = true;
             e.preventDefault();
             // 检查登录状态，如果未登录则打开登录弹窗
             if (!isUserLoggedIn()) {
                 openAuthModal();
             } else {
-                // 已登录则直接跳转到下载（须等埋点完成再跳转，否则 fetch 会被卸载中断）
-                await downloadSoftwarePackage(e.currentTarget);
+                // 已登录则直接跳转到下载
+                downloadSoftwarePackage();
             }
         }
 
@@ -903,7 +897,7 @@
             closeAuthModal();
             // 下载软件安装包
             if (isUserLoggedIn()) {
-                await downloadSoftwarePackage();
+                downloadSoftwarePackage();
             }
         }
 
@@ -937,12 +931,8 @@
 
             if (!result.success) return showMsg(result.message, true);
 
-            if (result.isNewUser && typeof pushDataLayerSignUp === 'function') {
-                pushDataLayerSignUp('email');
-            } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
-                pushDataLayerLogin('email');
-            }
-            await loginSuccess();
+            // 模拟登录成功
+            loginSuccess();
         });
 
         // ============== 邮箱注册 ==============
@@ -961,32 +951,23 @@
             
             if (!result.success) return showMsg(result.message, true);
             
-            if (result.isNewUser && typeof pushDataLayerSignUp === 'function') {
-                pushDataLayerSignUp('email');
-            } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
-                pushDataLayerLogin('email');
-            }
-            await loginSuccess();
+            // 模拟注册成功并自动登录
+            loginSuccess();
         });
 
         // ============== Google 登录 ==============
         googleLoginBtn.addEventListener('click', () => {
             /**
-             * 三方登录：回跳 URL 携带 oauthProvider=google。
-             * 若后端判定为首次注册并在回跳追加 newRegister=true，则推 sign_up，否则推 login。
+             * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
+             * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
              */
-            const returnQs = new URLSearchParams({
-                clickEvent: String(downloadButtonClicked),
-                oauthProvider: 'google',
-            });
-            const redirectURL = `${window.location.origin}${window.location.pathname}?${returnQs}`;
-            const loginRedirectParams = new URLSearchParams({
+            const params = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: redirectURL,
+                redirectURL: window.location.href + '?clickEvent=' + String(downloadButtonClicked),
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
-            window.location.href = `${API_BASE}/api/account/social/login?${loginRedirectParams}`;
+            window.location.href = `${API_BASE}/api/account/social/login?${params}`;
         });
 
 	// 封装字段获取工具函数
@@ -1042,15 +1023,14 @@
 			  headers: {
 				"Content-Type": "application/json",
 			  },
-			  body: JSON.stringify(properties),
-			  keepalive: true
+			  body: JSON.stringify(properties)
 			});
 		} catch (err) {
 			// 捕获请求异常，避免页面报错
 			console.error("Report failed: ", err);
 		}
 	}
-
+	
 	sendTrackingData();
 	
 	async function sendDownloadTrackingData() {
@@ -1066,16 +1046,15 @@
 			  headers: {
 				"Content-Type": "application/json",
 			  },
-			  body: JSON.stringify(properties),
-			  keepalive: true
+			  body: JSON.stringify(properties)
 			});
 		} catch (err) {
 			// 捕获请求异常，避免页面报错
 			console.error("Report failed: ", err);
 		}
 	}
-	async function handleDownloadClick(event) {
-		await handleDemoClick(event);
+	function handleDownloadClick(event) {
+		handleDemoClick(event);
 	}
 
     // 检测语言并控制二维码显示
@@ -1102,25 +1081,12 @@
         await updateLoginStatus(); // 确保登录状态在页面加载时更新
 
         const params = new URLSearchParams(window.location.search);
-        const oauthProvider = (params.get('oauthProvider') || '').toLowerCase();
-        if (oauthProvider && isUserLoggedIn()) {
-            const isOauthNewUser = params.get('newRegister') === 'true';
-            if (isOauthNewUser && typeof pushDataLayerSignUp === 'function') {
-                pushDataLayerSignUp(oauthProvider);
-            } else if (!isOauthNewUser && typeof pushDataLayerLogin === 'function') {
-                pushDataLayerLogin(oauthProvider);
-            }
-            params.delete('oauthProvider');
-            params.delete('newRegister');
-            const qs = params.toString();
-            history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
-        }
 
-        const paramsAfterClean = new URLSearchParams(window.location.search);
-        const isClickEvent = paramsAfterClean.get('clickEvent') === 'true';
+        // 2. 检测是否有 ?clickEvent=true
+        const isClickEvent = params.get('clickEvent') === 'true';
 
         if (isClickEvent && isUserLoggedIn()) {
-            await downloadSoftwarePackage();
+            downloadSoftwarePackage();
         }
     };
   </script>
