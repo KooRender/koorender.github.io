@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- i18n support -->
     <script src="js/i18n.js?v=20260320.1"></script>
+    <script src="js/gtm-data-layer.js?v=20260508"></script>
     
     <!-- 沿用原品牌样式配置 -->
     <script>
@@ -802,9 +803,14 @@
             }
         }
 
-        function downloadSoftwarePackage() {
+        const PLUGIN_DOWNLOAD_URL = 'https://cooverse-cos.kujiale.com/plugin/3dmax/3.1.6.exe';
+
+        function downloadSoftwarePackage(linkEl) {
+            if (typeof pushDataLayerFileDownload === 'function') {
+                pushDataLayerFileDownload(linkEl || null, PLUGIN_DOWNLOAD_URL);
+            }
             sendDownloadTrackingData();
-            window.location.href = "https://cooverse-cos.kujiale.com/plugin/alpha/3dmax/3.1.5.zip";
+            window.location.href = PLUGIN_DOWNLOAD_URL;
         }
 
         // Try Free Demo 点击
@@ -818,7 +824,7 @@
                 openAuthModal();
             } else {
                 // 已登录则直接跳转到下载
-                downloadSoftwarePackage();
+                downloadSoftwarePackage(e.currentTarget);
             }
         }
 
@@ -926,7 +932,11 @@
 
             if (!result.success) return showMsg(result.message, true);
 
-            // 模拟登录成功
+            if (result.isNewUser && typeof pushDataLayerSignUp === 'function') {
+                pushDataLayerSignUp('email');
+            } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
+                pushDataLayerLogin('email');
+            }
             loginSuccess();
         });
 
@@ -946,23 +956,32 @@
 
             if (!result.success) return showMsg(result.message, true);
 
-            // 模拟注册成功并自动登录
+            if (result.isNewUser && typeof pushDataLayerSignUp === 'function') {
+                pushDataLayerSignUp('email');
+            } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
+                pushDataLayerLogin('email');
+            }
             loginSuccess();
         });
 
         // ============== Google 登录 ==============
         googleLoginBtn.addEventListener('click', () => {
             /**
-             * 谷歌注册 — 本质就是一次页面跳转，后端处理所有 OAuth 逻辑
-             * GET /api/account/social/login?provider=GOOGLE&redirectURL=xx&type=WEBSITE
+             * 三方登录：回跳 URL 携带 oauthProvider=google。
+             * 若后端判定为首次注册并在回跳追加 newRegister=true，则推 sign_up，否则推 login。
              */
-            const params = new URLSearchParams({
+            const returnQs = new URLSearchParams({
+                clickEvent: String(downloadButtonClicked),
+                oauthProvider: 'google',
+            });
+            const redirectURL = `${window.location.origin}${window.location.pathname}?${returnQs}`;
+            const loginRedirectParams = new URLSearchParams({
                 provider: 'GOOGLE',
-                redirectURL: window.location.href + '?clickEvent=' + String(downloadButtonClicked),
+                redirectURL: redirectURL,
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
-            window.location.href = `${API_BASE}/api/account/social/login?${params}`;
+            window.location.href = `${API_BASE}/api/account/social/login?${loginRedirectParams}`;
         });
 
         // 封装字段获取工具函数
@@ -1053,9 +1072,22 @@
             await updateLoginStatus(); // 确保登录状态在页面加载时更新
 
             const params = new URLSearchParams(window.location.search);
+            const oauthProvider = (params.get('oauthProvider') || '').toLowerCase();
+            if (oauthProvider && isUserLoggedIn()) {
+                const isOauthNewUser = params.get('newRegister') === 'true';
+                if (isOauthNewUser && typeof pushDataLayerSignUp === 'function') {
+                    pushDataLayerSignUp(oauthProvider);
+                } else if (!isOauthNewUser && typeof pushDataLayerLogin === 'function') {
+                    pushDataLayerLogin(oauthProvider);
+                }
+                params.delete('oauthProvider');
+                params.delete('newRegister');
+                const qs = params.toString();
+                history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+            }
 
-            // 2. 检测是否有 ?clickEvent=true
-            const isClickEvent = params.get('clickEvent') === 'true';
+            const paramsAfterClean = new URLSearchParams(window.location.search);
+            const isClickEvent = paramsAfterClean.get('clickEvent') === 'true';
 
             if (isClickEvent && isUserLoggedIn()) {
                 downloadSoftwarePackage();
