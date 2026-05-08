@@ -376,7 +376,7 @@
             <div class="auth-desc" data-i18n="pop_desc">Login or register to continue</div>
 
             <!-- Google 登录 -->
-            <button class="google-login-btn" id="googleLoginBtn" style="
+            <button type="button" class="google-login-btn" id="googleLoginBtn" style="
               background: #4285f4;
               color: white;
               border: none;
@@ -965,7 +965,9 @@
                 type: 'WEBSITE',
                 registerSource: 'koorender',
             });
-            window.location.href = `${API_BASE}/api/account/social/login?${params}`;
+            const oauthStart = `${API_BASE}/api/account/social/login?${params}`;
+            // defer 可降低与同源点击埋点等在同步阶段争抢的偶发干扰
+            requestAnimationFrame(() => window.location.assign(oauthStart));
         });
 
         // 封装字段获取工具函数
