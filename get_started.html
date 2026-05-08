@@ -805,26 +805,26 @@
 
         const PLUGIN_DOWNLOAD_URL = 'https://cooverse-cos.kujiale.com/plugin/3dmax/3.1.6.exe';
 
-        function downloadSoftwarePackage(linkEl) {
+        async function downloadSoftwarePackage(linkEl) {
             if (typeof pushDataLayerFileDownload === 'function') {
                 pushDataLayerFileDownload(linkEl || null, PLUGIN_DOWNLOAD_URL);
             }
-            sendDownloadTrackingData();
+            await sendDownloadTrackingData();
             window.location.href = PLUGIN_DOWNLOAD_URL;
         }
 
         // Try Free Demo 点击
         var downloadButtonClicked = false;
 
-        function handleDemoClick(e) {
+        async function handleDemoClick(e) {
             downloadButtonClicked = true;
             e.preventDefault();
             // 检查登录状态，如果未登录则打开登录弹窗
             if (!isUserLoggedIn()) {
                 openAuthModal();
             } else {
-                // 已登录则直接跳转到下载
-                downloadSoftwarePackage(e.currentTarget);
+                // 已登录则直接跳转到下载（须等埋点完成再跳转，否则 fetch 会被卸载中断）
+                await downloadSoftwarePackage(e.currentTarget);
             }
         }
 
@@ -898,7 +898,7 @@
             closeAuthModal();
             // 下载软件安装包
             if (isUserLoggedIn()) {
-                downloadSoftwarePackage();
+                await downloadSoftwarePackage();
             }
         }
 
@@ -937,7 +937,7 @@
             } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
                 pushDataLayerLogin('email');
             }
-            loginSuccess();
+            await loginSuccess();
         });
 
         // ============== 邮箱注册 ==============
@@ -961,7 +961,7 @@
             } else if (!result.isNewUser && typeof pushDataLayerLogin === 'function') {
                 pushDataLayerLogin('email');
             }
-            loginSuccess();
+            await loginSuccess();
         });
 
         // ============== Google 登录 ==============
@@ -1037,15 +1037,16 @@
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(properties)
+                    body: JSON.stringify(properties),
+                    keepalive: true
                 });
             } catch (err) {
                 // 捕获请求异常，避免页面报错
                 console.error("Report failed: ", err);
             }
         }
-        function handleDownloadClick(event) {
-            handleDemoClick(event);
+        async function handleDownloadClick(event) {
+            await handleDemoClick(event);
         }
 
         // 检测语言并控制二维码显示
@@ -1090,7 +1091,7 @@
             const isClickEvent = paramsAfterClean.get('clickEvent') === 'true';
 
             if (isClickEvent && isUserLoggedIn()) {
-                downloadSoftwarePackage();
+                await downloadSoftwarePackage();
             }
         };
     </script>
