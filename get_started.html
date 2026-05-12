@@ -841,8 +841,8 @@
         }
 
         /**
-         * 拉取 Coohom 账号详情。未登录或无会话时一般为非 200 或无有效 data.d，返回 null；
-         * 下载等埋点仍会发送，此时不传 userId（见 buildKoorenderActionStatPayload）。
+         * 拉取 Coohom 账号详情。仅在有登录态（有效会话 Cookie）时接口才返回可用的 data.d；
+         * 未登录时无 detail（非 200 或 d 为空），返回 null。
          */
         async function fetchKoorenderAccountDetail(forceRefresh = false) {
             if (forceRefresh) {
@@ -1109,13 +1109,14 @@
         }
 
         function buildKoorenderActionStatPayload(accountDetail, behaviorSlug) {
-            // accountDetail 可为 null（未登录）：仅省略 userId / _orgId，其余字段照常上报
+            // accountDetail 为 null：未登录时无 detail，仅省略 userId / _orgId；其余字段照常上报
             const fields = getTrackingFields.getAllFields();
             const payload = Object.assign({}, fields, {
                 _behavior: behaviorSlug,
                 service: KOORENDER_TRACKING_SERVICE,
                 _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
-                _qhdi: pickKoorenderQhdi()
+                _qhdi: pickKoorenderQhdi(),
+                _time: '' // 与此前一致：空串占位，由 actionstat 侧写入服务端时间
             });
             payload._uniqueid = (typeof crypto !== 'undefined' && crypto.randomUUID)
                 ? crypto.randomUUID()
