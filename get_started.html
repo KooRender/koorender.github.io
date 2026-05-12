@@ -942,21 +942,26 @@
             if (nr !== 'true' && nr !== '1') return;
             if (!localStorage.getItem('userEmail')) return;
             pushSignUpToDataLayer('google');
-            const d = await fetchKoorenderAccountDetail(true);
-            await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
+            // updateLoginStatus() 已在 onload 中先行完成，此处取缓存 detail（完成登录后再打点）
+            const d = await fetchKoorenderAccountDetail(false);
+            await postKoorenderLandingEvent('register', d);
             url.searchParams.delete('newRegister');
             url.searchParams.delete('firstRegister');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
         }
 
-        // 模拟登录成功
-        async function loginSuccess() {
+        /**
+         * @param {{ afterAuthEventType?: string }} options — 邮箱认证成功后传入 register/login，在 updateLoginStatus 完成后再打 koorender_landing_event。
+         */
+        async function loginSuccess(options = {}) {
             invalidateKoorenderAccountDetailCache();
-            // 更新登录状态
             await updateLoginStatus();
-            // 关闭弹窗
             closeAuthModal();
-            // 下载软件安装包
+            const evt = options.afterAuthEventType;
+            if (evt) {
+                const d = await fetchKoorenderAccountDetail(false);
+                await postKoorenderLandingEvent(evt, d);
+            }
             if (isUserLoggedIn()) {
                 downloadSoftwarePackage();
             }
@@ -992,17 +997,15 @@
 
             if (!result.success) return showMsg(result.message, true);
 
-            const d = await fetchKoorenderAccountDetail(true);
-            // 服务端判定为新注册用户且已进入登录态（非待邮箱验证码）时上报
+            let afterAuthEventType = null;
             if (result.isNewUser && !result.needVerify) {
                 pushSignUpToDataLayer('email');
-                await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
+                afterAuthEventType = 'register';
             } else if (!result.isNewUser) {
-                await postKoorenderToolBehavior('koorender_landing_login', 'koorender_landing_login', d);
+                afterAuthEventType = 'login';
             }
 
-            // 模拟登录成功
-            loginSuccess();
+            await loginSuccess({ afterAuthEventType });
         });
 
         // ============== 邮箱注册 ==============
@@ -1021,17 +1024,15 @@
 
             if (!result.success) return showMsg(result.message, true);
 
-            const d = await fetchKoorenderAccountDetail(true);
-            // 验证码流程应在验证码校验成功后上报；此处仅覆盖已直接下发会话的新注册（见 cf 81452872210）
+            let afterAuthEventType = null;
             if (result.isNewUser && !result.needVerify) {
                 pushSignUpToDataLayer('email');
-                await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
+                afterAuthEventType = 'register';
             } else if (!result.isNewUser) {
-                await postKoorenderToolBehavior('koorender_landing_login', 'koorender_landing_login', d);
+                afterAuthEventType = 'login';
             }
 
-            // 模拟注册成功并自动登录
-            loginSuccess();
+            await loginSuccess({ afterAuthEventType });
         });
 
         // ============== Google 登录 ==============
@@ -1096,6 +1097,7 @@
 
         const KOORENDER_ACTIONSTAT_BASE = 'https://actionstat.kujiale.com/api/toolbehaviors';
         const KOORENDER_TRACKING_SERVICE = 'koorender_github_pages';
+        const KOORENDER_LANDING_EVENT_TOOL = 'koorender_landing_event';
 
         function readKoorenderCookie(name) {
             const escaped = name.replace(/([.*+?^${}()|[\]\\])/g, '\\$1');
@@ -1108,11 +1110,12 @@
             return readKoorenderCookie('qhdi') || readKoorenderCookie('_qhdi') || '';
         }
 
-        function buildKoorenderActionStatPayload(accountDetail, behaviorSlug) {
+        function buildKoorenderActionStatPayload(accountDetail, eventType) {
             // accountDetail 为 null：未登录时无 detail，仅省略 userId / _orgId；其余字段照常上报
             const fields = getTrackingFields.getAllFields();
             const payload = Object.assign({}, fields, {
-                _behavior: behaviorSlug,
+                _behavior: KOORENDER_LANDING_EVENT_TOOL,
+                eventType,
                 service: KOORENDER_TRACKING_SERVICE,
                 _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
                 _qhdi: pickKoorenderQhdi(),
@@ -1131,9 +1134,9 @@
             return payload;
         }
 
-        async function postKoorenderToolBehavior(slugSegment, behaviorSlug, accountDetail) {
-            const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
-            const body = buildKoorenderActionStatPayload(accountDetail, behaviorSlug);
+        async function postKoorenderLandingEvent(eventType, accountDetail) {
+            const url = `${KOORENDER_ACTIONSTAT_BASE}/${KOORENDER_LANDING_EVENT_TOOL}/log`;
+            const body = buildKoorenderActionStatPayload(accountDetail, eventType);
             try {
                 await fetch(url, {
                     method: 'POST',
@@ -1158,7 +1161,7 @@
             });
 
             const d = await fetchKoorenderAccountDetail(false);
-            await postKoorenderToolBehavior('koorender_landing_download', 'koorender_landing_download', d);
+            await postKoorenderLandingEvent('download', d);
         }
         function handleDownloadClick(event) {
             handleDemoClick(event);
