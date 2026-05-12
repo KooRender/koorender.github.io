@@ -1110,17 +1110,7 @@
             return readKoorenderCookie('qhdi') || readKoorenderCookie('_qhdi') || '';
         }
 
-        function buildKoorenderActionStatPayload(accountDetail, eventType) {
-            // accountDetail 为 null：未登录时无 detail，仅省略 userId / _orgId；其余字段照常上报
-            const fields = getTrackingFields.getAllFields();
-            const payload = Object.assign({}, fields, {
-                _behavior: KOORENDER_LANDING_EVENT_TOOL,
-                eventType,
-                service: KOORENDER_TRACKING_SERVICE,
-                _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
-                _qhdi: pickKoorenderQhdi(),
-                _time: '' // 与此前一致：空串占位，由 actionstat 侧写入服务端时间
-            });
+        function appendKoorenderCommonIdentifiers(payload, accountDetail) {
             payload._uniqueid = (typeof crypto !== 'undefined' && crypto.randomUUID)
                 ? crypto.randomUUID()
                 : (String(Date.now()) + '-' + Math.random().toString(36).slice(2));
@@ -1131,12 +1121,53 @@
             }
             const oid = accountDetail && (accountDetail.orgId ?? accountDetail.k_orgId);
             if (oid != null && oid !== '') payload._orgId = String(oid);
+        }
+
+        /** 下载：沿用原 koorender_landing_download，附带用户信息（detail 可为 null）。 */
+        function buildKoorenderToolBehaviorPayload(accountDetail, behaviorSlug) {
+            const fields = getTrackingFields.getAllFields();
+            const payload = Object.assign({}, fields, {
+                _behavior: behaviorSlug,
+                service: KOORENDER_TRACKING_SERVICE,
+                _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
+                _qhdi: pickKoorenderQhdi(),
+                _time: ''
+            });
+            appendKoorenderCommonIdentifiers(payload, accountDetail);
             return payload;
+        }
+
+        function buildKoorenderLandingEventPayload(accountDetail, eventType) {
+            const fields = getTrackingFields.getAllFields();
+            const payload = Object.assign({}, fields, {
+                _behavior: KOORENDER_LANDING_EVENT_TOOL,
+                eventType,
+                service: KOORENDER_TRACKING_SERVICE,
+                _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
+                _qhdi: pickKoorenderQhdi(),
+                _time: ''
+            });
+            appendKoorenderCommonIdentifiers(payload, accountDetail);
+            return payload;
+        }
+
+        async function postKoorenderToolBehavior(slugSegment, accountDetail) {
+            const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
+            const body = buildKoorenderToolBehaviorPayload(accountDetail, slugSegment);
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+            } catch (err) {
+                console.error('Report failed: ', err);
+            }
         }
 
         async function postKoorenderLandingEvent(eventType, accountDetail) {
             const url = `${KOORENDER_ACTIONSTAT_BASE}/${KOORENDER_LANDING_EVENT_TOOL}/log`;
-            const body = buildKoorenderActionStatPayload(accountDetail, eventType);
+            const body = buildKoorenderLandingEventPayload(accountDetail, eventType);
             try {
                 await fetch(url, {
                     method: 'POST',
@@ -1161,7 +1192,7 @@
             });
 
             const d = await fetchKoorenderAccountDetail(false);
-            await postKoorenderLandingEvent('download', d);
+            await postKoorenderToolBehavior('koorender_landing_download', d);
         }
         function handleDownloadClick(event) {
             handleDemoClick(event);
