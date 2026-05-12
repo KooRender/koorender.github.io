@@ -833,21 +833,54 @@
             return localStorage.getItem('userEmail') !== null;
         }
 
-        async function checkLoginStatus() {
-            const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
-                "headers": {},
-                "method": "GET",
-                "mode": "cors",
-                "credentials": "include"
-            });
+        let _koorenderDetailCache = null;
+        let _koorenderDetailFetched = false;
 
-            if (res.status !== 200) {
-                return false;
+        function invalidateKoorenderAccountDetailCache() {
+            _koorenderDetailFetched = false;
+        }
+
+        /**
+         * 拉取 Coohom 账号详情。仅在有登录态（有效会话 Cookie）时接口才返回可用的 data.d；
+         * 未登录时无 detail（非 200 或 d 为空），返回 null。
+         */
+        async function fetchKoorenderAccountDetail(forceRefresh = false) {
+            if (forceRefresh) {
+                _koorenderDetailFetched = false;
+            }
+            if (_koorenderDetailFetched) {
+                return _koorenderDetailCache;
             }
 
-            const data = await res.json();
-            if (data.d && data.d.email !== null) {
-                refreshLoginUI(data.d.email, data.d.avatar);
+            try {
+                const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
+                    headers: {},
+                    method: 'GET',
+                    mode: 'cors',
+                    credentials: 'include'
+                });
+
+                _koorenderDetailFetched = true;
+                if (res.status !== 200) {
+                    _koorenderDetailCache = null;
+                    return null;
+                }
+
+                const data = await res.json();
+                _koorenderDetailCache = data.d ?? null;
+                return _koorenderDetailCache;
+            } catch (err) {
+                _koorenderDetailFetched = true;
+                _koorenderDetailCache = null;
+                console.warn('fetchKoorenderAccountDetail failed:', err);
+                return null;
+            }
+        }
+
+        async function checkLoginStatus() {
+            const d = await fetchKoorenderAccountDetail(false);
+            if (d && d.email != null) {
+                refreshLoginUI(d.email, d.avatar);
                 return true;
             }
 
@@ -903,12 +936,14 @@
          * OAuth 回流：若后端在 redirectURL 上追加 newRegister / firstRegister，则在此处触发 google 渠道的 sign_up。
          * 去重后剔除参数，避免刷新重复上报。
          */
-        function tryTrackGoogleOAuthSignUp() {
+        async function tryTrackGoogleOAuthSignUp() {
             const url = new URL(window.location.href);
             const nr = url.searchParams.get('newRegister') || url.searchParams.get('firstRegister');
             if (nr !== 'true' && nr !== '1') return;
             if (!localStorage.getItem('userEmail')) return;
             pushSignUpToDataLayer('google');
+            const d = await fetchKoorenderAccountDetail(true);
+            await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
             url.searchParams.delete('newRegister');
             url.searchParams.delete('firstRegister');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
@@ -916,6 +951,7 @@
 
         // 模拟登录成功
         async function loginSuccess() {
+            invalidateKoorenderAccountDetailCache();
             // 更新登录状态
             await updateLoginStatus();
             // 关闭弹窗
@@ -956,8 +992,14 @@
 
             if (!result.success) return showMsg(result.message, true);
 
+            const d = await fetchKoorenderAccountDetail(true);
             // 服务端判定为新注册用户且已进入登录态（非待邮箱验证码）时上报
-            if (result.isNewUser && !result.needVerify) pushSignUpToDataLayer('email');
+            if (result.isNewUser && !result.needVerify) {
+                pushSignUpToDataLayer('email');
+                await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
+            } else if (!result.isNewUser) {
+                await postKoorenderToolBehavior('koorender_landing_login', 'koorender_landing_login', d);
+            }
 
             // 模拟登录成功
             loginSuccess();
@@ -979,8 +1021,14 @@
 
             if (!result.success) return showMsg(result.message, true);
 
+            const d = await fetchKoorenderAccountDetail(true);
             // 验证码流程应在验证码校验成功后上报；此处仅覆盖已直接下发会话的新注册（见 cf 81452872210）
-            if (result.isNewUser && !result.needVerify) pushSignUpToDataLayer('email');
+            if (result.isNewUser && !result.needVerify) {
+                pushSignUpToDataLayer('email');
+                await postKoorenderToolBehavior('koorender_landing_register', 'koorender_landing_register', d);
+            } else if (!result.isNewUser) {
+                await postKoorenderToolBehavior('koorender_landing_login', 'koorender_landing_login', d);
+            }
 
             // 模拟注册成功并自动登录
             loginSuccess();
@@ -1046,6 +1094,57 @@
             }
         };
 
+        const KOORENDER_ACTIONSTAT_BASE = 'https://actionstat.kujiale.com/api/toolbehaviors';
+        const KOORENDER_TRACKING_SERVICE = 'koorender_github_pages';
+
+        function readKoorenderCookie(name) {
+            const escaped = name.replace(/([.*+?^${}()|[\]\\])/g, '\\$1');
+            const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + escaped + '=([^;]*)'));
+            return m ? decodeURIComponent(m[1]) : '';
+        }
+
+        function pickKoorenderQhdi() {
+            // Coohom 域常见为 qhdi；部分环境可能使用 _qhdi
+            return readKoorenderCookie('qhdi') || readKoorenderCookie('_qhdi') || '';
+        }
+
+        function buildKoorenderActionStatPayload(accountDetail, behaviorSlug) {
+            // accountDetail 为 null：未登录时无 detail，仅省略 userId / _orgId；其余字段照常上报
+            const fields = getTrackingFields.getAllFields();
+            const payload = Object.assign({}, fields, {
+                _behavior: behaviorSlug,
+                service: KOORENDER_TRACKING_SERVICE,
+                _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
+                _qhdi: pickKoorenderQhdi(),
+                _time: '' // 与此前一致：空串占位，由 actionstat 侧写入服务端时间
+            });
+            payload._uniqueid = (typeof crypto !== 'undefined' && crypto.randomUUID)
+                ? crypto.randomUUID()
+                : (String(Date.now()) + '-' + Math.random().toString(36).slice(2));
+            const kid = accountDetail && accountDetail.k_id;
+            if (kid != null && kid !== '') {
+                const n = Number(kid);
+                if (!Number.isNaN(n)) payload.userId = n;
+            }
+            const oid = accountDetail && (accountDetail.orgId ?? accountDetail.k_orgId);
+            if (oid != null && oid !== '') payload._orgId = String(oid);
+            return payload;
+        }
+
+        async function postKoorenderToolBehavior(slugSegment, behaviorSlug, accountDetail) {
+            const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
+            const body = buildKoorenderActionStatPayload(accountDetail, behaviorSlug);
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+            } catch (err) {
+                console.error('Report failed: ', err);
+            }
+        }
+
         async function sendDownloadTrackingData(packageUrl) {
             // GTM Data Layer：文件下载转化（见 cf 对接文档 file_download）
             window.dataLayer = window.dataLayer || [];
@@ -1058,24 +1157,8 @@
                 link_text: lastFileDownloadLinkText || linkTextFallback || 'file_download'
             });
 
-            // 动态获取所有字段并赋值
-            const properties = getTrackingFields.getAllFields();
-
-            // 上报埋点
-            const url = "https://actionstat.kujiale.com/api/toolbehaviors/koorender_landing_download/log";
-
-            try {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(properties)
-                });
-            } catch (err) {
-                // 捕获请求异常，避免页面报错
-                console.error("Report failed: ", err);
-            }
+            const d = await fetchKoorenderAccountDetail(false);
+            await postKoorenderToolBehavior('koorender_landing_download', 'koorender_landing_download', d);
         }
         function handleDownloadClick(event) {
             handleDemoClick(event);
@@ -1103,7 +1186,7 @@
         window.onload = async function () {
             checkLanguageAndShowQR();
             await updateLoginStatus(); // 确保登录状态在页面加载时更新
-            tryTrackGoogleOAuthSignUp();
+            await tryTrackGoogleOAuthSignUp();
 
             const params = new URLSearchParams(window.location.search);
 
