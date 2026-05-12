@@ -978,6 +978,7 @@
 
         /**
          * @param {{ afterAuthEventType?: string }} options — 邮箱认证成功后传入 register/login，在 updateLoginStatus 完成后再打 koorender_landing_event。
+         * 仅当用户通过下载/Try Demo 入口打开弹窗时才自动下载。
          */
         async function loginSuccess(options = {}) {
             invalidateKoorenderAccountDetailCache();
@@ -988,8 +989,9 @@
                 const d = await fetchKoorenderAccountDetail(false);
                 await postKoorenderLandingEvent(evt, d);
             }
-            if (isUserLoggedIn()) {
-                downloadSoftwarePackage();
+            if (isUserLoggedIn() && downloadButtonClicked) {
+                downloadButtonClicked = false;
+                await downloadSoftwarePackage();
             }
         }
 
@@ -1003,9 +1005,14 @@
         loginTab.addEventListener('click', () => switchTab('login'));
         registerTab.addEventListener('click', () => switchTab('register'));
 
-        // 头部登录按钮点击
-        headerLoginBtn.addEventListener('click', openAuthModal);
-        mobileLoginBtn.addEventListener('click', openAuthModal);
+        headerLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
+        mobileLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
 
         // ============== 邮箱登录 ==============
         loginBtn.addEventListener('click', async () => {
