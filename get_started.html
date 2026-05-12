@@ -835,52 +835,78 @@
 
         let _koorenderDetailCache = null;
         let _koorenderDetailFetched = false;
+        let _koorenderDetailInflight = null;
+        let _koorenderDetailSnap = 0;
 
         function invalidateKoorenderAccountDetailCache() {
+            _koorenderDetailSnap++;
             _koorenderDetailFetched = false;
+            _koorenderDetailInflight = null;
         }
 
         /**
-         * 拉取 Coohom 账号详情。仅在有登录态（有效会话 Cookie）时接口才返回可用的 data.d；
-         * 未登录时无 detail（非 200 或 d 为空），返回 null。
+         * 拉取 Coohom 账号详情。并发合并为单次请求；invalidate 后的陈旧响应不写入缓存。
          */
         async function fetchKoorenderAccountDetail(forceRefresh = false) {
             if (forceRefresh) {
-                _koorenderDetailFetched = false;
+                invalidateKoorenderAccountDetailCache();
             }
             if (_koorenderDetailFetched) {
                 return _koorenderDetailCache;
             }
+            if (!_koorenderDetailInflight) {
+                const snap = _koorenderDetailSnap;
+                _koorenderDetailInflight = (async () => {
+                    try {
+                        const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
+                            headers: {},
+                            method: 'GET',
+                            mode: 'cors',
+                            credentials: 'include'
+                        });
 
-            try {
-                const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
-                    headers: {},
-                    method: 'GET',
-                    mode: 'cors',
-                    credentials: 'include'
-                });
+                        if (snap !== _koorenderDetailSnap) {
+                            return fetchKoorenderAccountDetail(false);
+                        }
 
-                _koorenderDetailFetched = true;
-                if (res.status !== 200) {
-                    _koorenderDetailCache = null;
-                    return null;
-                }
+                        _koorenderDetailFetched = true;
+                        if (res.status !== 200) {
+                            _koorenderDetailCache = null;
+                            return null;
+                        }
 
-                const data = await res.json();
-                _koorenderDetailCache = data.d ?? null;
-                return _koorenderDetailCache;
-            } catch (err) {
-                _koorenderDetailFetched = true;
-                _koorenderDetailCache = null;
-                console.warn('fetchKoorenderAccountDetail failed:', err);
-                return null;
+                        const data = await res.json();
+
+                        if (snap !== _koorenderDetailSnap) {
+                            _koorenderDetailFetched = false;
+                            return fetchKoorenderAccountDetail(false);
+                        }
+
+                        _koorenderDetailCache = data.d ?? null;
+                        return _koorenderDetailCache;
+                    } catch (err) {
+                        if (snap !== _koorenderDetailSnap) {
+                            return fetchKoorenderAccountDetail(false);
+                        }
+                        console.warn('fetchKoorenderAccountDetail failed:', err);
+                        _koorenderDetailFetched = true;
+                        _koorenderDetailCache = null;
+                        return null;
+                    } finally {
+                        _koorenderDetailInflight = null;
+                    }
+                })();
             }
+            return _koorenderDetailInflight;
         }
 
         async function checkLoginStatus() {
             const d = await fetchKoorenderAccountDetail(false);
-            if (d && d.email != null) {
-                refreshLoginUI(d.email, d.avatar);
+            const emailRaw = d && d.email;
+            const email = emailRaw != null ? String(emailRaw).trim() : '';
+            if (email) {
+                const av = d.avatar != null ? String(d.avatar) : '';
+                refreshLoginUI(email, av);
                 return true;
             }
 
@@ -891,7 +917,6 @@
         async function updateLoginStatus() {
             const loginStatus = await checkLoginStatus();
             if (loginStatus) {
-                // 已登录状态
                 const userEmail = localStorage.getItem('userEmail');
                 const userAvatar = localStorage.getItem('userAvatar');
 
@@ -907,7 +932,8 @@
                 mobileUserAvatar.src = userAvatar;
                 mobileUserEmail.textContent = userEmail;
             } else {
-                // 未登录状态
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userAvatar');
                 headerLoginBtn.classList.remove('hidden');
                 userMenuContainer.classList.add('hidden');
 
@@ -952,6 +978,7 @@
 
         /**
          * @param {{ afterAuthEventType?: string }} options — 邮箱认证成功后传入 register/login，在 updateLoginStatus 完成后再打 koorender_landing_event。
+         * 仅当用户通过下载/Try Demo 入口打开弹窗时才自动下载。
          */
         async function loginSuccess(options = {}) {
             invalidateKoorenderAccountDetailCache();
@@ -962,8 +989,9 @@
                 const d = await fetchKoorenderAccountDetail(false);
                 await postKoorenderLandingEvent(evt, d);
             }
-            if (isUserLoggedIn()) {
-                downloadSoftwarePackage();
+            if (isUserLoggedIn() && downloadButtonClicked) {
+                downloadButtonClicked = false;
+                await downloadSoftwarePackage();
             }
         }
 
@@ -977,9 +1005,14 @@
         loginTab.addEventListener('click', () => switchTab('login'));
         registerTab.addEventListener('click', () => switchTab('register'));
 
-        // 头部登录按钮点击
-        headerLoginBtn.addEventListener('click', openAuthModal);
-        mobileLoginBtn.addEventListener('click', openAuthModal);
+        headerLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
+        mobileLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
 
         // ============== 邮箱登录 ==============
         loginBtn.addEventListener('click', async () => {
@@ -1116,8 +1149,8 @@
                 : (String(Date.now()) + '-' + Math.random().toString(36).slice(2));
             const kid = accountDetail && accountDetail.k_id;
             if (kid != null && kid !== '') {
-                const n = Number(kid);
-                if (!Number.isNaN(n)) payload.userId = n;
+                const s = String(kid).trim();
+                if (s !== '') payload.userId = s;
             }
             const oid = accountDetail && (accountDetail.orgId ?? accountDetail.k_orgId);
             if (oid != null && oid !== '') payload._orgId = String(oid);

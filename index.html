@@ -840,52 +840,81 @@
 
         let _koorenderDetailCache = null;
         let _koorenderDetailFetched = false;
+        let _koorenderDetailInflight = null;
+        /** invalidate / forceRefresh 时递增，丢弃已过期的异步 fetch 结果写入缓存 */
+        let _koorenderDetailSnap = 0;
 
         function invalidateKoorenderAccountDetailCache() {
+            _koorenderDetailSnap++;
             _koorenderDetailFetched = false;
+            _koorenderDetailInflight = null;
         }
 
         /**
          * 拉取 Coohom 账号详情。仅在有登录态（有效会话 Cookie）时接口才返回可用的 data.d；
          * 未登录时无 detail（非 200 或 d 为空），返回 null。
+         * 并发调用合并为单次请求；invalidate 后的陈旧响应不会写入缓存。
          */
         async function fetchKoorenderAccountDetail(forceRefresh = false) {
             if (forceRefresh) {
-                _koorenderDetailFetched = false;
+                invalidateKoorenderAccountDetailCache();
             }
             if (_koorenderDetailFetched) {
                 return _koorenderDetailCache;
             }
+            if (!_koorenderDetailInflight) {
+                const snap = _koorenderDetailSnap;
+                _koorenderDetailInflight = (async () => {
+                    try {
+                        const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
+                            headers: {},
+                            method: 'GET',
+                            mode: 'cors',
+                            credentials: 'include'
+                        });
 
-            try {
-                const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
-                    headers: {},
-                    method: 'GET',
-                    mode: 'cors',
-                    credentials: 'include'
-                });
+                        if (snap !== _koorenderDetailSnap) {
+                            return fetchKoorenderAccountDetail(false);
+                        }
 
-                _koorenderDetailFetched = true;
-                if (res.status !== 200) {
-                    _koorenderDetailCache = null;
-                    return null;
-                }
+                        _koorenderDetailFetched = true;
+                        if (res.status !== 200) {
+                            _koorenderDetailCache = null;
+                            return null;
+                        }
 
-                const data = await res.json();
-                _koorenderDetailCache = data.d ?? null;
-                return _koorenderDetailCache;
-            } catch (err) {
-                _koorenderDetailFetched = true;
-                _koorenderDetailCache = null;
-                console.warn('fetchKoorenderAccountDetail failed:', err);
-                return null;
+                        const data = await res.json();
+
+                        if (snap !== _koorenderDetailSnap) {
+                            _koorenderDetailFetched = false;
+                            return fetchKoorenderAccountDetail(false);
+                        }
+
+                        _koorenderDetailCache = data.d ?? null;
+                        return _koorenderDetailCache;
+                    } catch (err) {
+                        if (snap !== _koorenderDetailSnap) {
+                            return fetchKoorenderAccountDetail(false);
+                        }
+                        console.warn('fetchKoorenderAccountDetail failed:', err);
+                        _koorenderDetailFetched = true;
+                        _koorenderDetailCache = null;
+                        return null;
+                    } finally {
+                        _koorenderDetailInflight = null;
+                    }
+                })();
             }
+            return _koorenderDetailInflight;
         }
 
         async function checkLoginStatus() {
             const d = await fetchKoorenderAccountDetail(false);
-            if (d && d.email != null) {
-                refreshLoginUI(d.email, d.avatar);
+            const emailRaw = d && d.email;
+            const email = emailRaw != null ? String(emailRaw).trim() : '';
+            if (email) {
+                const av = d.avatar != null ? String(d.avatar) : '';
+                refreshLoginUI(email, av);
                 return true;
             }
 
@@ -896,7 +925,7 @@
         async function updateLoginStatus() {
             const loginStatus = await checkLoginStatus();
             if (loginStatus) {
-                // 已登录状态
+                // 已登录状态（refreshLoginUI 已写入 localStorage）
                 const userEmail = localStorage.getItem('userEmail');
                 const userAvatar = localStorage.getItem('userAvatar');
                 
@@ -912,10 +941,12 @@
                 mobileUserAvatar.src = userAvatar;
                 mobileUserEmail.textContent = userEmail;
             } else {
-                // 未登录状态
+                // 未登录：清除本地摘要，避免与 isUserLoggedIn()、头部 UI 不一致
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userAvatar');
                 headerLoginBtn.classList.remove('hidden');
                 userMenuContainer.classList.add('hidden');
-                
+
                 mobileLoginBtn.classList.remove('hidden');
                 mobileUserInfo.classList.add('hidden');
             }
@@ -956,7 +987,7 @@
         }
 
         /**
-         * 登录/注册成功后关闭弹窗并可能拉起下载。
+         * 登录/注册成功后关闭弹窗；仅当用户此前通过下载/Try Demo 入口打开弹窗时才自动拉起下载。
          * @param {{ afterAuthEventType?: string }} options — 邮箱认证成功后传入 register/login，在 updateLoginStatus 完成后再打 koorender_landing_event（确保已有 detail）。
          */
         async function loginSuccess(options = {}) {
@@ -968,8 +999,9 @@
                 const d = await fetchKoorenderAccountDetail(false);
                 await postKoorenderLandingEvent(evt, d);
             }
-            if (isUserLoggedIn()) {
-                downloadSoftwarePackage();
+            if (isUserLoggedIn() && downloadButtonClicked) {
+                downloadButtonClicked = false;
+                await downloadSoftwarePackage();
             }
         }
 
@@ -983,9 +1015,15 @@
         loginTab.addEventListener('click', () => switchTab('login'));
         registerTab.addEventListener('click', () => switchTab('register'));
 
-        // 头部登录按钮点击
-        headerLoginBtn.addEventListener('click', openAuthModal);
-        mobileLoginBtn.addEventListener('click', openAuthModal);
+        // 头部登录按钮点击（非下载引流：不应在登录成功后自动下载）
+        headerLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
+        mobileLoginBtn.addEventListener('click', () => {
+            downloadButtonClicked = false;
+            openAuthModal();
+        });
 
         // ============== 邮箱登录 ==============
         loginBtn.addEventListener('click', async () => {
@@ -1122,8 +1160,8 @@
 			: (String(Date.now()) + '-' + Math.random().toString(36).slice(2));
 		const kid = accountDetail && accountDetail.k_id;
 		if (kid != null && kid !== '') {
-			const n = Number(kid);
-			if (!Number.isNaN(n)) payload.userId = n;
+			const s = String(kid).trim();
+			if (s !== '') payload.userId = s;
 		}
 		const oid = accountDetail && (accountDetail.orgId ?? accountDetail.k_orgId);
 		if (oid != null && oid !== '') payload._orgId = String(oid);
@@ -1191,8 +1229,6 @@
 		await postKoorenderToolBehavior('koorender_landing_view', d);
 	}
 
-	void sendTrackingData();
-
 	async function sendDownloadTrackingData(packageUrl) {
 		// GTM Data Layer：文件下载转化（见 cf 对接文档 file_download）
 		window.dataLayer = window.dataLayer || [];
@@ -1233,7 +1269,8 @@
     // 页面加载完成后执行检测
     window.onload = async function() {
         checkLanguageAndShowQR();
-        await updateLoginStatus(); // 确保登录状态在页面加载时更新
+        await updateLoginStatus(); // 先于 PV 埋点拉取 detail，避免与 sendTrackingData 并发竞态覆盖缓存
+        await sendTrackingData();
         await tryTrackGoogleOAuthSignUp();
 
         const params = new URLSearchParams(window.location.search);
