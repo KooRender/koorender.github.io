@@ -1253,18 +1253,20 @@
 		return payload;
 	}
 
-	async function postKoorenderToolBehavior(slugSegment, accountDetail) {
+	async function postKoorenderToolBehavior(slugSegment, accountDetail, options = {}) {
 		const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
 		const body = buildKoorenderToolBehaviorPayload(accountDetail, slugSegment);
 		console.info('[koorender-tracking]', slugSegment, 'POST', url, body);
 		const jsonBody = encodeKoorenderTrackingBody(body);
 		if (!jsonBody) return;
 		try {
-			const res = await fetch(url, {
+			const fetchOpts = {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json; charset=UTF-8' },
 				body: jsonBody
-			});
+			};
+			if (options.keepalive) fetchOpts.keepalive = true;
+			const res = await fetch(url, fetchOpts);
 			console.info('[koorender-tracking]', slugSegment, 'response', res.status, res.ok ? 'OK' : 'FAIL');
 		} catch (err) {
 			console.error('[koorender-tracking]', slugSegment, 'fetch error', err);
@@ -1295,6 +1297,7 @@
 	}
 
 	async function sendDownloadTrackingData(packageUrl) {
+		// 紧随 location 跳转卸载页面，DevTools 常看不到本次 POST 的 Payload；keepalive 利于发完请求；完整 body 见上方 console.info
 		// GTM Data Layer：文件下载转化（见 cf 对接文档 file_download）
 		window.dataLayer = window.dataLayer || [];
 		const { file_name, file_extension } = parseDownloadUrlForTracking(packageUrl);
@@ -1307,7 +1310,7 @@
 		});
 
 		const d = await fetchKoorenderAccountDetail(false);
-		await postKoorenderToolBehavior('koorender_landing_download', d);
+		await postKoorenderToolBehavior('koorender_landing_download', d, { keepalive: true });
 	}
 	function handleDownloadClick(event) {
 		handleDemoClick(event);
