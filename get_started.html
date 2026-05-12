@@ -1190,6 +1190,27 @@
             if (oid != null && oid !== '') payload._orgId = String(oid);
         }
 
+        function encodeKoorenderTrackingBody(payload) {
+            const stripCtrl = function (str) {
+                return String(str).replace(/[\u0000-\u001F\u007F]/g, '');
+            };
+            const safe = {};
+            for (const key of Object.keys(payload)) {
+                let val = payload[key];
+                if (val === undefined || typeof val === 'function' || typeof val === 'symbol') continue;
+                if (typeof val === 'bigint') val = String(val);
+                if (typeof val === 'number' && !Number.isFinite(val)) continue;
+                if (typeof val === 'string') val = stripCtrl(val);
+                safe[key] = val;
+            }
+            try {
+                return JSON.stringify(safe);
+            } catch (e) {
+                console.error('[koorender-tracking] JSON.stringify failed', e, safe);
+                return null;
+            }
+        }
+
         /** 下载：沿用原 koorender_landing_download，附带用户信息（detail 可为 null）。 */
         function buildKoorenderToolBehaviorPayload(accountDetail, behaviorSlug) {
             const fields = getTrackingFields.getAllFields();
@@ -1208,7 +1229,7 @@
             const fields = getTrackingFields.getAllFields();
             const payload = Object.assign({}, fields, {
                 _behavior: KOORENDER_LANDING_EVENT_TOOL,
-                eventType,
+                eventType: String(eventType || ''),
                 service: KOORENDER_TRACKING_SERVICE,
                 _ua: typeof navigator !== 'undefined' ? (navigator.userAgent || '') : '',
                 _qhdi: pickKoorenderQhdi(),
@@ -1222,11 +1243,13 @@
             const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
             const body = buildKoorenderToolBehaviorPayload(accountDetail, slugSegment);
             console.info('[koorender-tracking]', slugSegment, 'POST', url, body);
+            const jsonBody = encodeKoorenderTrackingBody(body);
+            if (!jsonBody) return;
             try {
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                    body: jsonBody
                 });
                 console.info('[koorender-tracking]', slugSegment, 'response', res.status, res.ok ? 'OK' : 'FAIL');
             } catch (err) {
@@ -1238,11 +1261,13 @@
             const url = `${KOORENDER_ACTIONSTAT_BASE}/${KOORENDER_LANDING_EVENT_TOOL}/log`;
             const body = buildKoorenderLandingEventPayload(accountDetail, eventType);
             console.info('[koorender-tracking]', KOORENDER_LANDING_EVENT_TOOL, 'eventType=', eventType, 'POST', url, body);
+            const jsonBody = encodeKoorenderTrackingBody(body);
+            if (!jsonBody) return;
             try {
                 const res = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                    body: jsonBody
                 });
                 console.info('[koorender-tracking]', KOORENDER_LANDING_EVENT_TOOL, eventType, 'response', res.status, res.ok ? 'OK' : 'FAIL');
             } catch (err) {
