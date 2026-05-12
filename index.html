@@ -145,6 +145,25 @@
 		font-size: 14px;
 		margin-bottom: 24px;
 	}
+	.msg {
+		display: none;
+		padding: 10px 14px;
+		border-radius: 10px;
+		font-size: 14px;
+		margin-bottom: 16px;
+		text-align: center;
+		line-height: 1.4;
+	}
+	.msg.error {
+		background: #fff2f0;
+		color: #cf1322;
+		border: 1px solid #ffccc7;
+	}
+	.msg.success {
+		background: #f6ffed;
+		color: #389e0d;
+		border: 1px solid #b7eb8f;
+	}
 	.google-login-btn {
 		width: 100%;
 		padding: 12px;
@@ -370,6 +389,8 @@
             <span class="modal-close" id="modalClose">✕</span>
             <div class="auth-title" data-i18n="pop_title">Welcome to KooRender</div>
             <div class="auth-desc" data-i18n="pop_desc">Login or register to continue</div>
+
+            <div id="msg" class="msg" style="display:none" role="alert" aria-live="polite"></div>
 
             <!-- Google 登录 -->
             <button type="button" class="google-login-btn" id="googleLoginBtn" style="
@@ -749,6 +770,10 @@
 
 		function showMsg(text, isError) {
 			const el = document.getElementById('msg');
+			if (!el) {
+				console.warn('[auth]', text);
+				return;
+			}
 			el.style.display = 'block';
 			el.className = 'msg ' + (isError ? 'error' : 'success');
 			el.textContent = text;
@@ -783,11 +808,23 @@
         function openAuthModal() {
             authModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            const msgEl = document.getElementById('msg');
+            if (msgEl) {
+                msgEl.style.display = 'none';
+                msgEl.textContent = '';
+                msgEl.className = 'msg';
+            }
         }
         // 关闭弹窗
         function closeAuthModal() {
             authModal.classList.remove('active');
             document.body.style.overflow = '';
+            const msgEl = document.getElementById('msg');
+            if (msgEl) {
+                msgEl.style.display = 'none';
+                msgEl.textContent = '';
+                msgEl.className = 'msg';
+            }
         }
         // 切换标签
         function switchTab(tab) {
