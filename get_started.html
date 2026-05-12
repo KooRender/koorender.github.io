@@ -1221,28 +1221,32 @@
         async function postKoorenderToolBehavior(slugSegment, accountDetail) {
             const url = `${KOORENDER_ACTIONSTAT_BASE}/${slugSegment}/log`;
             const body = buildKoorenderToolBehaviorPayload(accountDetail, slugSegment);
+            console.info('[koorender-tracking]', slugSegment, 'POST', url, body);
             try {
-                await fetch(url, {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
+                console.info('[koorender-tracking]', slugSegment, 'response', res.status, res.ok ? 'OK' : 'FAIL');
             } catch (err) {
-                console.error('Report failed: ', err);
+                console.error('[koorender-tracking]', slugSegment, 'fetch error', err);
             }
         }
 
         async function postKoorenderLandingEvent(eventType, accountDetail) {
             const url = `${KOORENDER_ACTIONSTAT_BASE}/${KOORENDER_LANDING_EVENT_TOOL}/log`;
             const body = buildKoorenderLandingEventPayload(accountDetail, eventType);
+            console.info('[koorender-tracking]', KOORENDER_LANDING_EVENT_TOOL, 'eventType=', eventType, 'POST', url, body);
             try {
-                await fetch(url, {
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
+                console.info('[koorender-tracking]', KOORENDER_LANDING_EVENT_TOOL, eventType, 'response', res.status, res.ok ? 'OK' : 'FAIL');
             } catch (err) {
-                console.error('Report failed: ', err);
+                console.error('[koorender-tracking]', KOORENDER_LANDING_EVENT_TOOL, eventType, 'fetch error', err);
             }
         }
 
