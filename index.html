@@ -1122,8 +1122,8 @@
 			: (String(Date.now()) + '-' + Math.random().toString(36).slice(2));
 		const kid = accountDetail && accountDetail.k_id;
 		if (kid != null && kid !== '') {
-			const n = Number(kid);
-			if (!Number.isNaN(n)) payload.userId = n;
+			const s = String(kid).trim();
+			if (s !== '') payload.userId = s;
 		}
 		const oid = accountDetail && (accountDetail.orgId ?? accountDetail.k_orgId);
 		if (oid != null && oid !== '') payload._orgId = String(oid);
