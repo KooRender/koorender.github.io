@@ -3,7 +3,7 @@
  * 站内下载与 GTM file_download 统计均应对 DOWNLOAD_PACKAGE_URL 解析埋点字段。
  */
 const DOWNLOAD_PACKAGE_URL =
-    'https://qhstaticssl.coohom.com/application/octetstream/1778836813751/bootstrap.exe';
+    'https://qhstaticssl.coohom.com/application/octetstream/1779090964819/bootstrap.exe';
 
 /**
  * @returns {Promise<string>}
