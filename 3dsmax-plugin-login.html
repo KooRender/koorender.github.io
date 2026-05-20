@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KooRender for 3ds Max - Login</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "PingFang SC", "Microsoft YaHei", sans-serif; background:#f6f7fb; color:#1d2129; }
+    .page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .card { width: 420px; max-width: 100%; background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,.10); padding:20px 20px 16px; }
+    .title { font-size:18px; font-weight:700; margin:0 0 6px; }
+    .desc { font-size:13px; color: rgba(29,33,41,.70); margin:0 0 14px; line-height: 1.45; }
+    .pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 10px; border-radius:999px; background:#f2f3f5; color:#4e5969; }
+    .row { display:flex; justify-content:space-between; align-items:center; margin: 0 0 14px; }
+    .divider { display:flex; align-items:center; gap:10px; color: rgba(29,33,41,.45); font-size:12px; margin: 12px 0; }
+    .divider::before, .divider::after { content:""; height:1px; background: rgba(0,0,0,.10); flex: 1; }
+    .tabs { display:flex; gap:8px; margin: 8px 0 12px; }
+    .tab { flex:1; text-align:center; padding:10px 10px; border-radius:12px; cursor:pointer; border:1px solid rgba(0,0,0,.10); background:#fff; font-size:13px; font-weight:600; color:#4e5969; }
+    .tab.active { border-color:#165dff; color:#165dff; background: rgba(22,93,255,.06); }
+    .form { display:none; }
+    .form.active { display:block; }
+    .input { width:100%; box-sizing:border-box; border:1px solid rgba(0,0,0,.12); border-radius:12px; padding:11px 12px; font-size:14px; outline:none; }
+    .input:focus { border-color:#165dff; box-shadow:0 0 0 3px rgba(22,93,255,.18); }
+    .btn { width:100%; border:none; border-radius:12px; padding:11px 12px; font-size:14px; font-weight:700; cursor:pointer; background:#165dff; color:#fff; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .google { background:#4285f4; display:flex; align-items:center; justify-content:center; gap:10px; }
+    .msg { display:none; margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.35; }
+    .msg.error { display:block; background: rgba(245,63,63,.08); color:#a8071a; border:1px solid rgba(245,63,63,.25); }
+    .msg.success { display:block; background: rgba(0,180,42,.08); color:#237804; border:1px solid rgba(0,180,42,.25); }
+    .tiny { margin-top: 12px; font-size: 12px; color: rgba(29,33,41,.55); line-height: 1.45; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="row">
+        <div class="pill" id="envPill">env=prod</div>
+        <div class="pill" id="apiPill">apiBase=</div>
+      </div>
+      <h1 class="title">Login to KooRender</h1>
+      <p class="desc">
+        This page is dedicated for the 3ds Max plugin. After login, the plugin will capture the Coohom session cookie and close this window automatically.
+      </p>
+
+      <button type="button" class="btn google" id="googleLoginBtn">
+        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#fff" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="divider">or use email</div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="login" id="loginTab">Login</div>
+        <div class="tab" data-tab="register" id="registerTab">Register</div>
+      </div>
+
+      <form class="form active" id="loginForm" autocomplete="on" novalidate>
+        <input class="input" type="email" id="loginEmail" name="username" autocomplete="username" placeholder="Email address" required />
+        <div style="height:10px"></div>
+        <input class="input" type="password" id="loginPwd" name="password" autocomplete="current-password" placeholder="Password" minlength="8" required />
+        <div style="height:12px"></div>
+        <button type="submit" class="btn" id="loginBtn">Login</button>
+      </form>
+
+      <form class="form" id="registerForm" autocomplete="on" novalidate>
+        <input class="input" type="email" id="regEmail" name="email" autocomplete="email" placeholder="Email address" required />
+        <div style="height:10px"></div>
+        <input class="input" type="password" id="regPwd" name="password" autocomplete="new-password" placeholder="Password" minlength="8" required />
+        <div style="height:12px"></div>
+        <button type="submit" class="btn" id="registerBtn">Create Account</button>
+      </form>
+
+      <div id="msg" class="msg" role="alert" aria-live="polite"></div>
+      <div class="tiny">
+        Tip: you can also open Coohom in a browser and login there; the plugin only needs a valid <code>qunhe-jwt</code> cookie on <code>.coohom.com</code>.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========= ENV & API_BASE =========
+    function pickEnv() {
+      const sp = new URLSearchParams(window.location.search);
+      const env = (sp.get('env') || 'prod').trim().toLowerCase();
+      if (env === 'beta' || env === 'sit' || env === 'prod') return env;
+      return 'prod';
+    }
+
+    const ENV = pickEnv();
+    const API_BASE_BY_ENV = {
+      prod: 'https://www.coohom.com',
+      beta: 'https://prod-test-sg.coohom.com',
+      sit: 'https://sit.coohom.com',
+    };
+    const API_BASE = API_BASE_BY_ENV[ENV] || API_BASE_BY_ENV.prod;
+    document.getElementById('envPill').textContent = 'env=' + ENV;
+    document.getElementById('apiPill').textContent = 'apiBase=' + API_BASE;
+
+    // ========= UI Tabs =========
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    function switchTab(tab) {
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+      } else {
+        loginTab.classList.remove('active');
+        registerTab.classList.add('active');
+        loginForm.classList.remove('active');
+        registerForm.classList.add('active');
+      }
+      showMsg('', false, true);
+    }
+    loginTab.addEventListener('click', () => switchTab('login'));
+    registerTab.addEventListener('click', () => switchTab('register'));
+
+    // ========= Helpers =========
+    function showMsg(text, isError, hide) {
+      const el = document.getElementById('msg');
+      if (!el) return;
+      if (hide || !text) {
+        el.style.display = 'none';
+        el.textContent = '';
+        el.className = 'msg';
+        return;
+      }
+      el.style.display = 'block';
+      el.textContent = String(text || '');
+      el.className = 'msg ' + (isError ? 'error' : 'success');
+    }
+    function normalizeResponse(data) {
+      // Align with existing pages: success indicated by HTTP 200; VERIFY flow uses c === 'VERIFY'
+      return {
+        ok: true,
+        needVerify: data && data.c === 'VERIFY',
+        message: data && data.m ? data.m : '',
+      };
+    }
+    async function easyLoginRegister({ email, password, registerSource = 'koorender' }) {
+      const res = await fetch(`${API_BASE}/api/account/authorization/koorender`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
+        credentials: 'include',
+        body: JSON.stringify({ email, password, registerSource }),
+      });
+      if (res.status !== 200) {
+        return { success: false, message: `HTTP ${res.status}` };
+      }
+      const data = await res.json();
+      const n = normalizeResponse(data);
+      if (n.needVerify) {
+        return { success: false, message: 'This account requires email verification. Please complete verification on Coohom and try again.' };
+      }
+      return { success: true, message: 'Login request submitted. If successful, the plugin will close this window.' };
+    }
+
+    // ========= Email Login / Register =========
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pwd = document.getElementById('loginPwd').value.trim();
+      if (!email || !pwd) return showMsg('Please fill in all fields', true);
+      const result = await easyLoginRegister({ email, password: pwd });
+      showMsg(result.message, !result.success);
+    });
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('regEmail').value.trim();
+      const pwd = document.getElementById('regPwd').value.trim();
+      if (!email || !pwd) return showMsg('Please fill in all fields', true);
+      if (pwd.length < 8) return showMsg('Password must be at least 8 characters', true);
+      const result = await easyLoginRegister({ email, password: pwd });
+      showMsg(result.message, !result.success);
+    });
+
+    // ========= Google OAuth =========
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      const redirectTarget = new URL(window.location.href);
+      const params = new URLSearchParams({
+        provider: 'GOOGLE',
+        redirectURL: redirectTarget.toString(),
+        type: 'WEBSITE',
+        registerSource: 'koorender',
+      });
+      const oauthStart = `${API_BASE}/api/account/social/login?${params}`;
+      requestAnimationFrame(() => window.location.assign(oauthStart));
+    });
+  </script>
+</body>
+</html>
+
