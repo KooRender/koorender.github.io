@@ -97,6 +97,8 @@
       sit: 'https://sit.coohom.com',
     };
     const API_BASE = API_BASE_BY_ENV[ENV] || API_BASE_BY_ENV.prod;
+    // Google OAuth 往往只在 prod 域配置了回调白名单；为避免 beta/sit 跳转失败，固定走 prod 域发起 OAuth。
+    const SOCIAL_BASE = API_BASE_BY_ENV.prod;
     document.getElementById('envPill').textContent = 'env=' + ENV;
     document.getElementById('apiPill').textContent = 'apiBase=' + API_BASE;
 
@@ -191,7 +193,7 @@
         type: 'WEBSITE',
         registerSource: 'koorender',
       });
-      const oauthStart = `${API_BASE}/api/account/social/login?${params}`;
+      const oauthStart = `${SOCIAL_BASE}/api/account/social/login?${params}`;
       requestAnimationFrame(() => window.location.assign(oauthStart));
     });
   </script>
