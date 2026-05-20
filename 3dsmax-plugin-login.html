@@ -11,8 +11,6 @@
     .card { width: 420px; max-width: 100%; background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,.10); padding:20px 20px 16px; }
     .title { font-size:18px; font-weight:700; margin:0 0 6px; }
     .desc { font-size:13px; color: rgba(29,33,41,.70); margin:0 0 14px; line-height: 1.45; }
-    .pill { display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:4px 10px; border-radius:999px; background:#f2f3f5; color:#4e5969; }
-    .row { display:flex; justify-content:space-between; align-items:center; margin: 0 0 14px; }
     .divider { display:flex; align-items:center; gap:10px; color: rgba(29,33,41,.45); font-size:12px; margin: 12px 0; }
     .divider::before, .divider::after { content:""; height:1px; background: rgba(0,0,0,.10); flex: 1; }
     .tabs { display:flex; gap:8px; margin: 8px 0 12px; }
@@ -35,10 +33,6 @@
 <body>
   <div class="page">
     <div class="card">
-      <div class="row">
-        <div class="pill" id="envPill">env=prod</div>
-        <div class="pill" id="apiPill">apiBase=</div>
-      </div>
       <h1 class="title">Login to KooRender</h1>
       <p class="desc">
         This page is dedicated for the 3ds Max plugin. After login, the plugin will capture the Coohom session cookie and close this window automatically.
@@ -99,8 +93,7 @@
     const API_BASE = API_BASE_BY_ENV[ENV] || API_BASE_BY_ENV.prod;
     // Google OAuth：按 env 选择对应的 Coohom 后端域名发起（prod / beta / sit）
     const SOCIAL_BASE = API_BASE;
-    document.getElementById('envPill').textContent = 'env=' + ENV;
-    document.getElementById('apiPill').textContent = 'apiBase=' + API_BASE;
+    console.info('[koorender-plugin-login] env=', ENV, 'apiBase=', API_BASE, 'socialBase=', SOCIAL_BASE);
 
     // ========= UI Tabs =========
     const loginTab = document.getElementById('loginTab');
@@ -236,6 +229,31 @@
 
     // ========= Initial login detection (e.g. returned from OAuth) =========
     (function bootstrapLoginHint() {
+      // OAuth / 三方登录回跳的错误态提示（例如：需要邮箱验证/设置密码）
+      try {
+        const sp = new URLSearchParams(window.location.search);
+        const thirdPartyCode = (sp.get('third_party_code') || '').trim();
+        const verifyType = (sp.get('verifyType') || '').trim();
+        const verifyEmail = (sp.get('verifyEmail') || '').trim();
+        if (thirdPartyCode) {
+          if (thirdPartyCode === 'LOGIN_VERIFY_REQUIRED') {
+            const emailHint = verifyEmail ? ` (${verifyEmail})` : '';
+            showMsg(
+              `Third-party login requires additional verification${emailHint}. Please complete email verification / set password on Coohom, then return to this page and try again.`,
+              true
+            );
+          } else {
+            const vt = verifyType ? ` verifyType=${verifyType}` : '';
+            showMsg(`Third-party login failed: ${thirdPartyCode}.${vt}`, true);
+          }
+
+          // 避免把 verifyEmail / verifyCode 长期留在地址栏（降低泄露风险）
+          const url = new URL(window.location.href);
+          ['signup_type', 'third_party_code', 'verifyType', 'verifyCode', 'verifyEmail'].forEach((k) => url.searchParams.delete(k));
+          window.history.replaceState({}, document.title, url.toString());
+        }
+      } catch (_) {}
+
       // On OAuth return, backend may append flags like newRegister/firstRegister.
       // Do a quick detect and then re-check once shortly after.
       detectLoginAndPrompt();
