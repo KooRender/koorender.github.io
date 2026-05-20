@@ -97,8 +97,8 @@
       sit: 'https://sit.coohom.com',
     };
     const API_BASE = API_BASE_BY_ENV[ENV] || API_BASE_BY_ENV.prod;
-    // Google OAuth 往往只在 prod 域配置了回调白名单；为避免 beta/sit 跳转失败，固定走 prod 域发起 OAuth。
-    const SOCIAL_BASE = API_BASE_BY_ENV.prod;
+    // Google OAuth：按 env 选择对应的 Coohom 后端域名发起（prod / beta / sit）
+    const SOCIAL_BASE = API_BASE;
     document.getElementById('envPill').textContent = 'env=' + ENV;
     document.getElementById('apiPill').textContent = 'apiBase=' + API_BASE;
 
@@ -165,6 +165,31 @@
       return { success: true, message: 'Login request submitted. If successful, the plugin will close this window.' };
     }
 
+    async function fetchAccountDetail() {
+      try {
+        const res = await fetch(`${API_BASE}/api/account/detail/koorender`, {
+          headers: {},
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+        });
+        if (res.status !== 200) return null;
+        const data = await res.json();
+        return data && data.d ? data.d : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    async function detectLoginAndPrompt() {
+      const d = await fetchAccountDetail();
+      const emailRaw = d && d.email;
+      const email = emailRaw != null ? String(emailRaw).trim() : '';
+      if (!email) return false;
+      showMsg(`Login successful: ${email}. You can close this window now.`, false);
+      return true;
+    }
+
     // ========= Email Login / Register =========
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -173,6 +198,10 @@
       if (!email || !pwd) return showMsg('Please fill in all fields', true);
       const result = await easyLoginRegister({ email, password: pwd });
       showMsg(result.message, !result.success);
+      if (result.success) {
+        // Allow some time for session cookie to be set by backend.
+        setTimeout(() => detectLoginAndPrompt(), 600);
+      }
     });
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -182,11 +211,19 @@
       if (pwd.length < 8) return showMsg('Password must be at least 8 characters', true);
       const result = await easyLoginRegister({ email, password: pwd });
       showMsg(result.message, !result.success);
+      if (result.success) {
+        setTimeout(() => detectLoginAndPrompt(), 600);
+      }
     });
 
     // ========= Google OAuth =========
     document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      // 确保 env 不丢失（插件依赖它选择正确的 Coohom 后端）
       const redirectTarget = new URL(window.location.href);
+      // 线上(prod)不强制追加 env；beta/sit 若缺失则补齐
+      if (ENV !== 'prod' && !redirectTarget.searchParams.get('env')) {
+        redirectTarget.searchParams.set('env', ENV);
+      }
       const params = new URLSearchParams({
         provider: 'GOOGLE',
         redirectURL: redirectTarget.toString(),
@@ -196,6 +233,14 @@
       const oauthStart = `${SOCIAL_BASE}/api/account/social/login?${params}`;
       requestAnimationFrame(() => window.location.assign(oauthStart));
     });
+
+    // ========= Initial login detection (e.g. returned from OAuth) =========
+    (function bootstrapLoginHint() {
+      // On OAuth return, backend may append flags like newRegister/firstRegister.
+      // Do a quick detect and then re-check once shortly after.
+      detectLoginAndPrompt();
+      setTimeout(() => detectLoginAndPrompt(), 1200);
+    })();
   </script>
 </body>
 </html>
