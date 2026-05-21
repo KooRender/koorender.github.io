@@ -30,7 +30,17 @@ const translations = {
         'hero_title': 'KooRender <span class="badge-3dsmax">for 3ds Max</span><br><span class="text-primary text-[clamp(1.2rem,3vw,2rem)]">Cloud-based Real-time Renderer</span>',
         'hero_desc': 'Experience physically realistic, high-quality rendering anytime, anywhere—no local high-end machines required. KooRender redefines 3D rendering with cloud power and AI intelligence.',
         'hero_tagline': 'Cloud-based Real-time Renderer',
-        'page_title_home': 'KooRender - Cloud-based Real-time Renderer',
+        'page_title_home': 'KooRender for 3ds Max | Cloud Real-time Rendering Plugin',
+        'page_title_features': 'Features | KooRender 3ds Max Real-time Rendering Plugin',
+        'page_title_get_started': 'Get Started | Download KooRender 3ds Max Plugin',
+        'page_title_learn_more': 'Learn More | KooRender Cloud Rendering for 3ds Max',
+        'page_title_login': 'Login | KooRender for 3ds Max',
+        'seo_description_home': 'KooRender is a cloud real-time rendering plugin for Autodesk 3ds Max. Get interactive V-Ray-compatible rendering, AI denoising, and unlimited GPU scale—no local workstation required.',
+        'seo_description_features': 'Explore KooRender features: real-time and offline cloud rendering, V-Ray workflow support, 3D Gaussians, AI denoiser, and native 3ds Max 2021–2026 plugin integration.',
+        'seo_description_get_started': 'Download and install the KooRender 3ds Max plugin in minutes. Free trial for real-time cloud rendering—Windows 10+, 3ds Max 2021–2026, V-Ray 4–7.',
+        'seo_description_learn_more': 'Learn how KooRender cloud rendering breaks local GPU limits for 3ds Max. Sub-2s latency, V-Ray compatibility, and zero learning curve with native plugin integration.',
+        'seo_description_login': 'Sign in to KooRender for 3ds Max to access cloud real-time rendering.',
+        'seo_keywords': '3ds Max plugin, real-time rendering, cloud rendering, V-Ray, 3ds Max 2026, KooRender, 3D rendering, AI denoiser, 3ds Max cloud render',
         'hero_demo_btn': 'Download 3ds Max Plugin',
         'hero_learn_more_btn': 'Learn More',
         'hero_trusted_by': 'Trusted by 1000+ 3ds Max professionals worldwide',
@@ -203,7 +213,17 @@ const translations = {
         'hero_title': 'KooRender <span class="badge-3dsmax">for 3ds Max</span><br><span class="text-primary text-[clamp(1rem,2.5vw,1.8rem)]">基于云端的实时渲染器</span>',
         'hero_desc': '随时随地体验物理真实、高质量的渲染——无需本地高端机器。KooRender 以云端算力和 AI 智能重新定义 3D 渲染。',
         'hero_tagline': '基于云端的实时渲染器',
-        'page_title_home': 'KooRender - 基于云端的实时渲染器',
+        'page_title_home': 'KooRender 3ds Max 插件 | 云端实时渲染',
+        'page_title_features': '功能特点 | KooRender 3ds Max 实时渲染插件',
+        'page_title_get_started': '开始使用 | 下载 KooRender 3ds Max 插件',
+        'page_title_learn_more': '了解更多 | KooRender 3ds Max 云渲染',
+        'page_title_login': '登录 | KooRender 3ds Max 插件',
+        'seo_description_home': 'KooRender 是面向 Autodesk 3ds Max 的云端实时渲染插件，支持 V-Ray 工作流、AI 降噪与无限 GPU 算力扩展，无需本地高端工作站。',
+        'seo_description_features': '了解 KooRender 功能：实时与离线云渲染、V-Ray 兼容、3D Gaussian、AI 降噪，以及 3ds Max 2021–2026 原生插件集成。',
+        'seo_description_get_started': '几分钟内下载安装 KooRender 3ds Max 插件，限时免费试用云端实时渲染。系统要求：Windows 10+、3ds Max 2021–2026、V-Ray 4–7。',
+        'seo_description_learn_more': '了解 KooRender 如何为 3ds Max 突破本地 GPU 限制：亚 2 秒延迟、V-Ray 兼容、原生插件零学习成本。',
+        'seo_description_login': '登录 KooRender 3ds Max 插件，使用云端实时渲染服务。',
+        'seo_keywords': '3ds Max 插件, 实时渲染, 云渲染, V-Ray, 3ds Max 2026, KooRender, 3D 渲染, AI 降噪, 3ds Max 云渲染',
         'hero_demo_btn': '下载3ds Max插件',
         'hero_learn_more_btn': '了解更多',
         'hero_trusted_by': '全球 1000 多名3ds Max专业用户的选择',
@@ -413,8 +433,12 @@ function updatePage() {
         }
     });
 
-    // 更新 html 标签的 lang 属性
-    document.documentElement.lang = currentLang;
+    // 更新 html 标签的 lang 属性（BCP 47）
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+
+    if (typeof applySeo === 'function') {
+        applySeo(currentLang);
+    }
 
     // 更新切换按钮显示
     const langBtns = document.querySelectorAll('.lang-current-text');

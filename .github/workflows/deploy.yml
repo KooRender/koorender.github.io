@@ -33,6 +33,7 @@ jobs:
           cp *.html site/
           cp -R js/ site/
           cp CNAME site/
+          cp robots.txt sitemap.xml site/
           cp docs_util/index.html site/docs/index.html
 
       - name: Deploy
