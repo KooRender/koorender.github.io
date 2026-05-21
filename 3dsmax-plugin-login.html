@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>KooRender for 3ds Max - Login</title>
+  <meta name="description" content="Sign in to KooRender for 3ds Max to access cloud real-time rendering.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://www.koorender.com/3dsmax-plugin-login.html">
   <style>
     :root { color-scheme: light; }
     body { margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "PingFang SC", "Microsoft YaHei", sans-serif; background:#f6f7fb; color:#1d2129; }
@@ -174,12 +177,36 @@
       }
     }
 
+    let _localhostNotified = false;
+    async function notifyLocalhostLoginSuccess(accountDetail) {
+      if (_localhostNotified) return;
+      _localhostNotified = true;
+      try {
+        await fetch('http://localhost:7878/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ok: true,
+            ts: Date.now(),
+            env: ENV,
+            apiBase: API_BASE,
+            email: accountDetail && accountDetail.email ? String(accountDetail.email) : '',
+            userId: (accountDetail && (accountDetail.k_id ?? accountDetail.kId ?? accountDetail.userId)) ?? '',
+          }),
+        });
+        console.info('[koorender-plugin-login] notified localhost success');
+      } catch (e) {
+        console.warn('[koorender-plugin-login] notify localhost failed', e);
+      }
+    }
+
     async function detectLoginAndPrompt() {
       const d = await fetchAccountDetail();
       const emailRaw = d && d.email;
       const email = emailRaw != null ? String(emailRaw).trim() : '';
       if (!email) return false;
       showMsg(`Login successful: ${email}. You can close this window now.`, false);
+      notifyLocalhostLoginSuccess(d);
       return true;
     }
 
