@@ -191,25 +191,25 @@
 
     let _localhostNotified = false;
     async function notifyLocalhostLoginSuccess(accountDetail) {
-      if (_localhostNotified) return;
-      _localhostNotified = true;
-      try {
-        await fetch('http://localhost:7878/test', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ok: true,
-            ts: Date.now(),
-            env: ENV,
-            apiBase: API_BASE,
-            email: accountDetail && accountDetail.email ? String(accountDetail.email) : '',
-            userId: (accountDetail && (accountDetail.k_id ?? accountDetail.kId ?? accountDetail.userId)) ?? '',
-          }),
-        });
-        console.info('[koorender-plugin-login] notified localhost success');
-      } catch (e) {
-        console.warn('[koorender-plugin-login] notify localhost failed', e);
-      }
+        if (_localhostNotified) return;
+        _localhostNotified = true;
+        try {
+            await fetch('http://localhost:7878/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ok: true,
+                    ts: Date.now(),
+                    env: typeof ENV !== 'undefined' ? ENV : '',
+                    apiBase: typeof API_BASE !== 'undefined' ? API_BASE : '',
+                    email: accountDetail && accountDetail.email ? String(accountDetail.email) : '',
+                    userId: (accountDetail && (accountDetail.k_id || accountDetail.kId || accountDetail.userId)) || ''
+                }),
+            });
+            console.info('[koorender-plugin-login] notified localhost success');
+        } catch (e) {
+            console.warn('[koorender-plugin-login] notify localhost failed', e);
+        }
     }
 
     function showLoggedInUI(email) {
