@@ -791,12 +791,7 @@
             }
 
 			const data = await res.json();
-
-			// 登录/注册成功后显示WhatsApp提示
-			if (data.success) {
-			    showWhatsappNotification();
-			}
-
+			showWhatsappNotification();
 			return normalizeResponse(data, res.status);
 		}
 
@@ -1086,6 +1081,7 @@
             url.searchParams.delete('newRegister');
             url.searchParams.delete('firstRegister');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+            showWhatsappNotification();
         }
 
         /**
