@@ -361,39 +361,46 @@
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: #25D366;
-        color: white;
+        background: #25D366 !important;
+        color: white !important;
         padding: 16px 24px;
         border-radius: 10px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        z-index: 999999;
-        display: flex;
+        z-index: 9999999 !important;
+        display: flex !important;
         align-items: center;
         gap: 12px;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.3s ease !important;
+        width: 90%;
+        max-width: 600px;
     }
     .whatsapp-notification.show {
-        opacity: 1;
-        visibility: visible;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
     }
     .whatsapp-notification i {
         font-size: 20px;
+        flex-shrink: 0;
     }
     .whatsapp-notification a {
-        color: white;
-        text-decoration: underline;
-        font-weight: 600;
+        color: white !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+        word-break: break-all;
     }
     .whatsapp-notification a:hover {
         color: #f0f0f0;
     }
     .whatsapp-close {
-        margin-left: 12px;
+        margin-left: auto;
         cursor: pointer;
         font-size: 18px;
         opacity: 0.8;
+        flex-shrink: 0;
+        padding: 0 8px;
     }
     .whatsapp-close:hover {
         opacity: 1;
@@ -791,14 +798,20 @@
             }
 
 			const data = await res.json();
-			showWhatsappNotification();
+
+            setTimeout(showWhatsappNotification, 500);
+
 			return normalizeResponse(data, res.status);
 		}
 
         // 显示WhatsApp通知
+        const whatsappNotification = document.getElementById('whatsappNotification');
+		const whatsappClose = document.getElementById('whatsappClose');
+    
         function showWhatsappNotification() {
-            const notification = document.getElementById('whatsappNotification');
-            notification.classList.add('show');
+            console.log("Show whatsapp notification");
+            whatsappNotification.style.display = 'flex';
+            whatsappNotification.classList.add('show');
             
             // 10秒后自动关闭
             setTimeout(() => {
@@ -808,12 +821,14 @@
 
         // 隐藏WhatsApp通知
         function hideWhatsappNotification() {
-            const notification = document.getElementById('whatsappNotification');
-            notification.classList.remove('show');
+            whatsappNotification.classList.remove('show');
+            setTimeout(() => {
+				whatsappNotification.style.display = 'none';
+			}, 300);
         }
 
         // 关闭WhatsApp通知按钮事件
-        document.getElementById('whatsappClose').addEventListener('click', hideWhatsappNotification);
+        whatsappClose.addEventListener('click', hideWhatsappNotification);
 
 		// ============================================================
 		//  Helpers
@@ -1081,7 +1096,8 @@
             url.searchParams.delete('newRegister');
             url.searchParams.delete('firstRegister');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
-            showWhatsappNotification();
+
+            setTimeout(showWhatsappNotification, 500);
         }
 
         /**
