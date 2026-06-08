@@ -1385,27 +1385,8 @@
 		handleDemoClick(event);
 	}
 
-    // 检测语言并控制二维码显示
-    function checkLanguageAndShowQR() {
-      // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
-      const pageLang = document.documentElement.lang || '';
-      const browserLang = navigator.language || navigator.userLanguage || '';
-      
-      // 2. 判断是否为中文（包含简体zh-CN、繁体zh-TW/zh-HK等）
-      const isChinese = pageLang.startsWith('zh') || browserLang.startsWith('zh');
-      
-      // 3. 显示/隐藏二维码
-      const qrContainer = document.getElementById('qrContainer');
-      if (isChinese) {
-        qrContainer.style.display = 'block'; // 中文环境显示
-      } else {
-        qrContainer.style.display = 'none';  // 非中文环境隐藏
-      }
-    }
-
     // 页面加载完成后执行检测
     window.onload = async function() {
-        checkLanguageAndShowQR();
         await updateLoginStatus(); // 先于 PV 埋点拉取 detail，避免与 sendTrackingData 并发竞态覆盖缓存
         await sendTrackingData();
         await tryTrackGoogleOAuthSignUp();
