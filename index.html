@@ -1067,6 +1067,8 @@
             localStorage.setItem('userEmail', email);
             // 生成随机头像（实际项目中应该从登录接口获取）
             localStorage.setItem('userAvatar', avatar);
+            // Show login or register success notifications
+            setTimeout(showWhatsappNotification, 500);
         }
 
         /** GTM Data Layer：注册转化 sign_up（见 cf 81452872210）*/
@@ -1113,7 +1115,6 @@
                 downloadButtonClicked = false;
                 await downloadSoftwarePackage();
             }
-            setTimeout(showWhatsappNotification, 500);
         }
 
         // 关闭
