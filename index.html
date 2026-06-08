@@ -797,9 +797,7 @@
                 return { success: false, message: 'Error' };
             }
 
-			const data = await res.json();
-
-            setTimeout(showWhatsappNotification, 500);
+            const data = await res.json();
 
 			return normalizeResponse(data, res.status);
 		}
@@ -1096,8 +1094,6 @@
             url.searchParams.delete('newRegister');
             url.searchParams.delete('firstRegister');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
-
-            setTimeout(showWhatsappNotification, 500);
         }
 
         /**
@@ -1117,6 +1113,7 @@
                 downloadButtonClicked = false;
                 await downloadSoftwarePackage();
             }
+            setTimeout(showWhatsappNotification, 500);
         }
 
         // 关闭
