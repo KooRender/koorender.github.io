@@ -64,42 +64,6 @@
     </style>
     
     <style>
-    /* 悬浮容器：固定在右下角 */
-    .floating-qr {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 9999;
-      padding: 10px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      text-align: center; /* 让文字和图片居中 */
-    }
-
-    /* 二维码图片 */
-    .floating-qr img {
-      width: 160px;
-      height: auto;
-      display: block;
-      margin: 0 auto; /* 图片居中（兜底） */
-    }
-
-    /* 下方文字样式 */
-    .qr-text {
-      margin: 8px 0 0; /* 文字和二维码间距 */
-      font-size: 14px; /* 字号 */
-      color: #333;     /* 文字颜色 */
-      line-height: 1.2;/* 行高，避免文字重叠 */
-    }
-
-    /* 可选：悬停轻微放大，增加交互感 */
-    .floating-qr {
-      transition: transform 0.2s ease;
-    }
-    .floating-qr:hover {
-      transform: scale(1.05);
-    }
 
     /* 新版登录/注册弹窗样式 */
     .modal-overlay {
@@ -179,6 +143,11 @@
         background: #f6ffed;
         color: #389e0d;
         border: 1px solid #b7eb8f;
+    }
+    .msg.whatsapp {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
     }
     .google-login-btn {
         width: 100%;
@@ -378,6 +347,56 @@
     .login-btn:hover {
         background: #0047cc;
     }
+    /* WhatsApp提示样式 */
+    .whatsapp-notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #25D366 !important;
+        color: white !important;
+        padding: 16px 24px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 9999999 !important;
+        display: flex !important;
+        align-items: center;
+        gap: 12px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease !important;
+        width: 90%;
+        max-width: 600px;
+    }
+    .whatsapp-notification.show {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+    }
+    .whatsapp-notification i {
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+    .whatsapp-notification a {
+        color: white !important;
+        text-decoration: underline !important;
+        font-weight: 600 !important;
+        word-break: break-all;
+    }
+    .whatsapp-notification a:hover {
+        color: #f0f0f0;
+    }
+    .whatsapp-close {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 18px;
+        opacity: 0.8;
+        flex-shrink: 0;
+        padding: 0 8px;
+    }
+    .whatsapp-close:hover {
+        opacity: 1;
+    }
   </style>
   
   <script>
@@ -394,12 +413,6 @@
   </script>
 </head>
 <body class="font-sans text-dark bg-white">
-    <!-- 悬浮二维码（带文字） -->
-    <div class="floating-qr" id="qrContainer">
-        <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
-        <p class="qr-text">扫码加入用户群</p>
-    </div>
-
     <!-- 新版登录/注册弹窗 -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-container">
@@ -457,6 +470,18 @@
                 <a href="https://www.coohom.com/pub/market/portal/c/privacy-policy" target="_blank" rel="noopener noreferrer" class="form-link" data-i18n="footer_privacy_policy">Privacy Policy</a>.
             </div>
         </div>
+    </div>
+    
+    <!-- WhatsApp提示弹窗 -->
+    <div class="whatsapp-notification" id="whatsappNotification">
+        <i class="fab fa-whatsapp"></i>
+        <div>
+            <strong>Join our community!</strong> Connect with other KooRender users on WhatsApp:
+            <a href="https://chat.whatsapp.com/FFpE4bXxLH2FQ3gnyQccnz?mode=gi_t" target="_blank" rel="noopener noreferrer">
+                https://chat.whatsapp.com/FFpE4bXxLH2FQ3gnyQccnz?mode=gi_t
+            </a>
+        </div>
+        <span class="whatsapp-close" id="whatsappClose">✕</span>
     </div>
 
     <!-- 导航栏（与原页面一致） -->
@@ -757,6 +782,32 @@
 
             return normalizeResponse(data, res.status);
         }
+        
+        // 显示WhatsApp通知
+        const whatsappNotification = document.getElementById('whatsappNotification');
+		const whatsappClose = document.getElementById('whatsappClose');
+    
+        function showWhatsappNotification() {
+            console.log("Show whatsapp notification");
+            whatsappNotification.style.display = 'flex';
+            whatsappNotification.classList.add('show');
+            
+            // 10秒后自动关闭
+            setTimeout(() => {
+                hideWhatsappNotification();
+            }, 10000);
+        }
+
+        // 隐藏WhatsApp通知
+        function hideWhatsappNotification() {
+            whatsappNotification.classList.remove('show');
+            setTimeout(() => {
+				whatsappNotification.style.display = 'none';
+			}, 300);
+        }
+
+        // 关闭WhatsApp通知按钮事件
+        whatsappClose.addEventListener('click', hideWhatsappNotification);
 
         // ============================================================
         //  Helpers
@@ -992,6 +1043,8 @@
             localStorage.setItem('userEmail', email);
             // 生成随机头像（实际项目中应该从登录接口获取）
             localStorage.setItem('userAvatar', avatar);
+            // Show login or register success notifications
+            setTimeout(showWhatsappNotification, 500);
         }
 
         /** GTM Data Layer：注册转化 sign_up（见 cf 81452872210）*/
@@ -1309,27 +1362,8 @@
             handleDemoClick(event);
         }
 
-        // 检测语言并控制二维码显示
-        function checkLanguageAndShowQR() {
-            // 1. 获取浏览器语言（优先取页面设置，再取浏览器默认）
-            const pageLang = document.documentElement.lang || '';
-            const browserLang = navigator.language || navigator.userLanguage || '';
-
-            // 2. 判断是否为中文（包含简体zh-CN、繁体zh-TW/zh-HK等）
-            const isChinese = pageLang.startsWith('zh') || browserLang.startsWith('zh');
-
-            // 3. 显示/隐藏二维码
-            const qrContainer = document.getElementById('qrContainer');
-            if (isChinese) {
-                qrContainer.style.display = 'block'; // 中文环境显示
-            } else {
-                qrContainer.style.display = 'none';  // 非中文环境隐藏
-            }
-        }
-
         // 页面加载完成后执行检测
         window.onload = async function () {
-            checkLanguageAndShowQR();
             await updateLoginStatus(); // 确保登录状态在页面加载时更新
             await tryTrackGoogleOAuthSignUp();
 
