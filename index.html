@@ -78,43 +78,6 @@
     </style>
     
     <style>
-    /* 悬浮容器：固定在右下角 */
-    .floating-qr {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 9999;
-      padding: 10px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      text-align: center; /* 让文字和图片居中 */
-    }
-
-    /* 二维码图片 */
-    .floating-qr img {
-      width: 160px;
-      height: auto;
-      display: block;
-      margin: 0 auto; /* 图片居中（兜底） */
-    }
-
-    /* 下方文字样式 */
-    .qr-text {
-      margin: 8px 0 0; /* 文字和二维码间距 */
-      font-size: 14px; /* 字号 */
-      color: #333;     /* 文字颜色 */
-      line-height: 1.2;/* 行高，避免文字重叠 */
-    }
-
-    /* 可选：悬停轻微放大，增加交互感 */
-    .floating-qr {
-      transition: transform 0.2s ease;
-    }
-    .floating-qr:hover {
-      transform: scale(1.05);
-    }
-    
     /* 新版登录/注册弹窗样式 */
 	.modal-overlay {
 		position: fixed;
@@ -190,6 +153,11 @@
 		color: #389e0d;
 		border: 1px solid #b7eb8f;
 	}
+    .msg.whatsapp {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+    }
 	.google-login-btn {
 		width: 100%;
 		padding: 12px;
@@ -387,8 +355,51 @@
     .login-btn:hover {
         background: #0047cc;
     }
+    /* WhatsApp提示样式 */
+    .whatsapp-notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #25D366;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    .whatsapp-notification.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .whatsapp-notification i {
+        font-size: 20px;
+    }
+    .whatsapp-notification a {
+        color: white;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+    .whatsapp-notification a:hover {
+        color: #f0f0f0;
+    }
+    .whatsapp-close {
+        margin-left: 12px;
+        cursor: pointer;
+        font-size: 18px;
+        opacity: 0.8;
+    }
+    .whatsapp-close:hover {
+        opacity: 1;
+    }
   </style>
-    
+
     <script>
     (function() {
 		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
@@ -403,12 +414,6 @@
     </script>
 </head>
 <body class="font-sans text-dark bg-white">
-  <!-- 悬浮二维码（带文字） -->
-  <div class="floating-qr" id="qrContainer">
-    <img src="https://qhstaticssl.kujiale.com/image/png/1774260215826/AD549EE366FF058E79D60B3C45D7D9A4.png" alt="用户群二维码" />
-    <p class="qr-text">扫码加入用户群</p>
-  </div>
-  
   <!-- 新版登录/注册弹窗 -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-container">
@@ -468,7 +473,19 @@
         </div>
     </div>
   
-    <!-- Navigation Bar -->
+    <!-- WhatsApp提示弹窗 -->
+    <div class="whatsapp-notification" id="whatsappNotification">
+        <i class="fab fa-whatsapp"></i>
+        <div>
+            <strong>Join our community!</strong> Connect with other KooRender users on WhatsApp:
+            <a href="https://chat.whatsapp.com/FFpE4bXxLH2FQ3gnyQccnz?mode=gi_t" target="_blank" rel="noopener noreferrer">
+                https://chat.whatsapp.com/FFpE4bXxLH2FQ3gnyQccnz?mode=gi_t
+            </a>
+        </div>
+        <span class="whatsapp-close" id="whatsappClose">✕</span>
+    </div>
+
+	<!-- Navigation Bar -->
     <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="/" class="block">
@@ -775,8 +792,33 @@
 
 			const data = await res.json();
 
+			// 登录/注册成功后显示WhatsApp提示
+			if (data.success) {
+			    showWhatsappNotification();
+			}
+
 			return normalizeResponse(data, res.status);
 		}
+
+        // 显示WhatsApp通知
+        function showWhatsappNotification() {
+            const notification = document.getElementById('whatsappNotification');
+            notification.classList.add('show');
+            
+            // 10秒后自动关闭
+            setTimeout(() => {
+                hideWhatsappNotification();
+            }, 10000);
+        }
+
+        // 隐藏WhatsApp通知
+        function hideWhatsappNotification() {
+            const notification = document.getElementById('whatsappNotification');
+            notification.classList.remove('show');
+        }
+
+        // 关闭WhatsApp通知按钮事件
+        document.getElementById('whatsappClose').addEventListener('click', hideWhatsappNotification);
 
 		// ============================================================
 		//  Helpers
