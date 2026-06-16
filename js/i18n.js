@@ -191,7 +191,9 @@ const translations = {
         'vs_scalability_koo': 'Unlimited on-demand scaling',
         'vs_workflow': 'Workflow',
         'vs_workflow_trad': 'Disruptive "adjust-wait-evaluate" cycle',
-        'vs_workflow_koo': 'Seamless real-time iteration'
+        'vs_workflow_koo': 'Seamless real-time iteration',
+        'download_notice': 'Notice: This download will not function for users who do not have 3ds Max installed.',
+        'max_notice': 'Please make sure you have 3ds Max installed, otherwise this software cannot be used.'
     },
     'zh': {
         'nav_features': '功能特点',
@@ -374,7 +376,9 @@ const translations = {
         'vs_scalability_koo': '无限按需扩展',
         'vs_workflow': '工作流',
         'vs_workflow_trad': '被中断的“调整-等待-评估”循环',
-        'vs_workflow_koo': '无缝实时迭代'
+        'vs_workflow_koo': '无缝实时迭代',
+        'download_notice': '注意：本下载对于未安装3ds Max的用户无法使用。',
+        'max_notice': '请确保您已经安装了3ds Max，否则本软件无法使用。'
     }
 };
 
