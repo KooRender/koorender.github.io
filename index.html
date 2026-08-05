@@ -35,389 +35,467 @@
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#165DFF',
-                        secondary: '#0A2463',
-                        accent: '#3E92CC',
-                        neutral: '#F5F7FA',
-                        dark: '#1D2B3A'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
+        theme: {
+        extend: {
+        colors: {
+        primary: '#165DFF',
+        secondary: '#0A2463',
+        accent: '#3E92CC',
+        neutral: '#F5F7FA',
+        dark: '#1D2B3A'
+        },
+        fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+        }
+        }
         }
     </script>
-    
+
     <style type="text/tailwindcss">
         @layer utilities {
             .text-shadow {
                 text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
+
             .feature-card-hover {
                 transition: all 0.3s ease;
             }
-            .feature-card-hover:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 12px 24px rgba(22, 93, 255, 0.15);
-            }
+
+                .feature-card-hover:hover {
+                    transform: translateY(-8px);
+                    box-shadow: 0 12px 24px rgba(22, 93, 255, 0.15);
+                }
+
             .badge-3dsmax {
-				background: linear-gradient(135deg, #ff6b00, #ff9500);
-				color: white;
-				font-size: 16px;    /* 再次加大 */
-				font-weight: 600;
-				padding: 8px 16px; /* 内边距同步放大，更饱满 */
-				border-radius: 6px;
-				display: inline-block;
-				margin-left: 8px;
-			}
+                background: linear-gradient(135deg, #ff6b00, #ff9500);
+                color: white;
+                font-size: 16px; /* 再次加大 */
+                font-weight: 600;
+                padding: 8px 16px; /* 内边距同步放大，更饱满 */
+                border-radius: 6px;
+                display: inline-block;
+                margin-left: 8px;
+            }
         }
     </style>
-    
-    <style>
-    /* 新版登录/注册弹窗样式 */
-	.modal-overlay {
-		position: fixed;
-		top: 0; left: 0; right: 0; bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		backdrop-filter: blur(6px);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 99999;
-		opacity: 0;
-		visibility: hidden;
-		transition: all 0.3s ease;
-	}
-	.modal-overlay.active {
-		opacity: 1;
-		visibility: visible;
-	}
-	.modal-container {
-		background: #fff;
-		border-radius: 16px;
-		box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-		width: 90%;
-		max-width: 460px;
-		padding: 28px 32px;
-		transform: translateY(20px);
-		transition: transform 0.3s ease;
-		position: relative;
-	}
-	.modal-overlay.active .modal-container {
-		transform: translateY(0);
-	}
-	.modal-close {
-		position: absolute;
-		top: 20px; right: 24px;
-		font-size: 20px;
-		color: #999;
-		cursor: pointer;
-		transition: color 0.2s;
-	}
-	.modal-close:hover {
-		color: #165DFF;
-	}
-	.auth-title {
-		font-size: 22px;
-		font-weight: 700;
-		color: #1D2B3A;
-		margin-bottom: 8px;
-		text-align: center;
-	}
-	.auth-desc {
-		text-align: center;
-		color: #666;
-		font-size: 14px;
-		margin-bottom: 24px;
-	}
-	.msg {
-		display: none;
-		padding: 10px 14px;
-		border-radius: 10px;
-		font-size: 14px;
-		margin-bottom: 16px;
-		text-align: center;
-		line-height: 1.4;
-	}
-	.msg.error {
-		background: #fff2f0;
-		color: #cf1322;
-		border: 1px solid #ffccc7;
-	}
-	.msg.success {
-		background: #f6ffed;
-		color: #389e0d;
-		border: 1px solid #b7eb8f;
-	}
-    .msg.whatsapp {
-        background: #e8f5e9;
-        color: #2e7d32;
-        border: 1px solid #c8e6c9;
-    }
-	.google-login-btn {
-		width: 100%;
-		padding: 12px;
-		border: 1px solid #ddd;
-		border-radius: 10px;
-		background: #fff;
-		font-size: 15px;
-		font-weight: 500;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 10px;
-		cursor: pointer;
-		transition: all 0.2s;
-		margin-bottom: 28px;
-	}
-	.google-login-btn:hover {
-		background: #f7f9ff;
-		border-color: #165DFF;
-	}
-	.google-login-btn img {
-		width: 18px; height: 18px;
-	}
-	.auth-divider {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		color: #999;
-		font-size: 13px;
-		margin: 20px 0;
-	}
-	.auth-divider::before,
-	.auth-divider::after {
-		content: "";
-		flex: 1;
-		height: 1px;
-		background: #eee;
-	}
-	.auth-tabs {
-		display: flex;
-		background: #f5f7fa;
-		border-radius: 10px;
-		padding: 4px;
-		margin-bottom: 20px;
-	}
-	.auth-tab {
-		flex: 1;
-		text-align: center;
-		padding: 10px 0;
-		border-radius: 8px;
-		font-weight: 600;
-		color: #666;
-		cursor: pointer;
-		transition: all 0.2s;
-	}
-	.auth-tab.active {
-		background: #fff;
-		color: #165DFF;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-	}
-	.auth-form {
-		display: none;
-	}
-	.auth-form.active {
-		display: block;
-	}
-	.form-input {
-		width: 100%;
-		padding: 14px 16px;
-		border: 1px solid #eee;
-		border-radius: 10px;
-		font-size: 15px;
-		margin-bottom: 16px;
-		transition: border-color 0.2s;
-	}
-	.form-input:focus {
-		outline: none;
-		border-color: #165DFF;
-		box-shadow: 0 0 0 3px rgba(22,93,255,0.1);
-	}
-	.form-btn {
-		width: 100%;
-		padding: 15px;
-		background: #165DFF;
-		color: #fff;
-		border: none;
-		border-radius: 10px;
-		font-size: 15px;
-		font-weight: 600;
-		cursor: pointer;
-		transition: background 0.2s;
-		margin-top: 8px;
-	}
-	.form-btn:hover {
-		background: #0047cc;
-	}
-	.form-link {
-		color: #165DFF;
-		text-decoration: none;
-		font-weight: 500;
-	}
-	.form-link:hover {
-		text-decoration: underline;
-	}
-	.agreement {
-		text-align: center;
-		font-size: 12px;
-		color: #999;
-		margin-top: 20px;
-		line-height: 1.4;
-	}
 
-    /* 用户信息下拉菜单样式 */
-    .user-menu-container {
-        position: relative;
-        display: inline-block;
-    }
-    .user-avatar-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        border-radius: 24px;
-        border: 1px solid #eee;
-        background: #fff;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .user-avatar-btn:hover {
-        background: #f7f9ff;
-        border-color: #165DFF;
-    }
-    .user-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #fff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .user-email {
-        font-size: 14px;
-        color: #333;
-        max-width: 180px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .user-dropdown-menu {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        margin-top: 8px;
-        width: 200px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        padding: 8px 0;
-        z-index: 100;
-        display: none;
-    }
-    .user-dropdown-menu.active {
-        display: block;
-    }
-    .user-dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 16px;
-        font-size: 14px;
-        color: #333;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-    .user-dropdown-item:hover {
-        background: #f7f9ff;
-        color: #165DFF;
-    }
-    .user-dropdown-divider {
-        height: 1px;
-        background: #eee;
-        margin: 8px 0;
-    }
-    .login-btn {
-        background: #165DFF;
-        color: #fff;
-        padding: 6px 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: none;
-    }
-    .login-btn:hover {
-        background: #0047cc;
-    }
-    /* WhatsApp提示样式 */
-    .whatsapp-notification {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #25D366 !important;
-        color: white !important;
-        padding: 16px 24px;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        z-index: 9999999 !important;
-        display: flex !important;
-        align-items: center;
-        gap: 12px;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease !important;
-        width: 90%;
-        max-width: 600px;
-    }
-    .whatsapp-notification.show {
-        opacity: 1 !important;
-        visibility: visible !important;
-        display: flex !important;
-    }
-    .whatsapp-notification i {
-        font-size: 20px;
-        flex-shrink: 0;
-    }
-    .whatsapp-notification a {
-        color: white !important;
-        text-decoration: underline !important;
-        font-weight: 600 !important;
-        word-break: break-all;
-    }
-    .whatsapp-notification a:hover {
-        color: #f0f0f0;
-    }
-    .whatsapp-close {
-        margin-left: auto;
-        cursor: pointer;
-        font-size: 18px;
-        opacity: 0.8;
-        flex-shrink: 0;
-        padding: 0 8px;
-    }
-    .whatsapp-close:hover {
-        opacity: 1;
-    }
-  </style>
+    <style>
+        /* 新版登录/注册弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .modal-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        .modal-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 460px;
+            padding: 28px 32px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+            .modal-close:hover {
+                color: #165DFF;
+            }
+
+        .auth-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1D2B3A;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .auth-desc {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .msg {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+            .msg.error {
+                background: #fff2f0;
+                color: #cf1322;
+                border: 1px solid #ffccc7;
+            }
+
+            .msg.success {
+                background: #f6ffed;
+                color: #389e0d;
+                border: 1px solid #b7eb8f;
+            }
+
+            .msg.whatsapp {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #c8e6c9;
+            }
+
+        .google-login-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 28px;
+        }
+
+            .google-login-btn:hover {
+                background: #f7f9ff;
+                border-color: #165DFF;
+            }
+
+            .google-login-btn img {
+                width: 18px;
+                height: 18px;
+            }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #999;
+            font-size: 13px;
+            margin: 20px 0;
+        }
+
+            .auth-divider::before,
+            .auth-divider::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: #eee;
+            }
+
+        .auth-tabs {
+            display: flex;
+            background: #f5f7fa;
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+            .auth-tab.active {
+                background: #fff;
+                color: #165DFF;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+        .auth-form {
+            display: none;
+        }
+
+            .auth-form.active {
+                display: block;
+            }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #165DFF;
+                box-shadow: 0 0 0 3px rgba(22,93,255,0.1);
+            }
+
+        .form-btn {
+            width: 100%;
+            padding: 15px;
+            background: #165DFF;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+
+            .form-btn:hover {
+                background: #0047cc;
+            }
+
+        .form-link {
+            color: #165DFF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .form-link:hover {
+                text-decoration: underline;
+            }
+
+        .agreement {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        /* 用户信息下拉菜单样式 */
+        .user-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-avatar-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 24px;
+            border: 1px solid #eee;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .user-avatar-btn:hover {
+                background: #f7f9ff;
+                border-color: #165DFF;
+            }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: #333;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            width: 200px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            z-index: 100;
+            display: none;
+        }
+
+            .user-dropdown-menu.active {
+                display: block;
+            }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+            .user-dropdown-item:hover {
+                background: #f7f9ff;
+                color: #165DFF;
+            }
+
+        .user-dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 8px 0;
+        }
+
+        .login-btn {
+            background: #165DFF;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+            .login-btn:hover {
+                background: #0047cc;
+            }
+        /* WhatsApp提示样式 */
+        .whatsapp-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #25D366 !important;
+            color: white !important;
+            padding: 16px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 9999999 !important;
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease !important;
+            width: 90%;
+            max-width: 600px;
+        }
+
+            .whatsapp-notification.show {
+                opacity: 1 !important;
+                visibility: visible !important;
+                display: flex !important;
+            }
+
+            .whatsapp-notification i {
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .whatsapp-notification a {
+                color: white !important;
+                text-decoration: underline !important;
+                font-weight: 600 !important;
+                word-break: break-all;
+            }
+
+                .whatsapp-notification a:hover {
+                    color: #f0f0f0;
+                }
+
+        .whatsapp-close {
+            margin-left: auto;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.8;
+            flex-shrink: 0;
+            padding: 0 8px;
+        }
+
+            .whatsapp-close:hover {
+                opacity: 1;
+            }
+    </style>
 
     <script>
-    (function() {
-		// 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
-		if (window.location.hostname.includes('koorender.com')) {
-			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-			})(window,document,'script','dataLayer','GTM-K936WG5');
-		}
-	})();
+        (function() {
+        // 权限校验：仅在 coohom 域名下运行监控，拦截非官方域名的垃圾数据
+        if (window.location.hostname.includes('koorender.com')) {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-K936WG5');
+        }
+        })();
+    </script>
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "KooRender for 3ds Max",
+          "operatingSystem": "Windows",
+          "applicationCategory": "3D Rendering Software",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "description": "Free trial available"
+          },
+          "featureList": "Cloud real-time rendering, V-Ray compatibility, AI denoising, unlimited cloud GPU",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Manycore Tech",
+            "url": "https://manycoretech.com"
+          },
+          "downloadUrl": "https://www.koorender.com/get_started.html",
+          "image": "https://qhstaticssl.kujiale.com/image/png/1773645165382/F724EB380400904A6B7BE7EB0000504A.png",
+          "description": "Cloud real-time rendering plugin for Autodesk 3ds Max with AI denoise and cloud GPU rendering."
+        }
     </script>
 </head>
 <body class="font-sans text-dark bg-white">
