@@ -625,10 +625,10 @@
                     <!-- 新增视频/动图区域 -->
                     <div class="mb-8">
                         <div class="rounded-xl overflow-hidden shadow-lg bg-neutral flex items-center justify-center">
-                            <!-- 关键：flex + 居中 -->
-                            <img src="https://qhstaticssl.kujiale.com/image/gif/1773389492637/B465189EB9FBA85C91A19F3631212307.gif"
-                                 alt="KooRender usage demo"
-                                 class="max-w-full max-h-full object-contain">  <!-- 限制最大尺寸 -->
+                            <!-- 关键：flex + 居中，替换为video标签，保留原样式 -->
+                            <video autoplay loop muted playsinline loading="lazy" class="max-w-full max-h-full object-contain">
+                                <source src="https://qhstaticva-cos.kujiale.com/media/yun/help/video/UID_494bc045_fac6_44c2_1785921472685.mp4" type="video/mp4">
+                            </video>
                         </div>
                         <p class="text-center text-dark/60 mt-3 text-sm">KooRender</p>
                     </div>
